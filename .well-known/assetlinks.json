@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.faculty_of_commerce_zag.twa",
+        "sha256_cert_fingerprints": ["EA:5B:A0:38:11:A6:ED:A2:1A:91:59:A6:E9:A4:EA:81:88:58:78:BC:CD:A0:0C:80:8D:DC:F6:25:01:30:5A:A6"]
+      }
+    }]
