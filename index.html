@@ -170,21 +170,22 @@
         };
 
         const SectionView = ({ type, title, icon, data, hideYearFilter = false, showSystemFilter = false, onBack, onPreviewSingle, onRequestDownload, initialFilters, showToast, highlightedItemId }) => {
-            const[filterYear, setFilterYear] = useState(initialFilters?.year || 'الكل');
-            const[filterSystem, setFilterSystem] = useState(initialFilters?.system || 'الكل'); 
+            
+            // استخدام المسميات الجديدة كافتراضي
+            const[filterYear, setFilterYear] = useState(initialFilters?.year || 'اختار الفرقة');
+            const[filterSystem, setFilterSystem] = useState(initialFilters?.system || 'اختار النظام'); 
             const[visibleCount, setVisibleCount] = useState(10);
 
-            const years =['الكل', 'الفرقة الأولى', 'الفرقة الثانية', 'الفرقة الثالثة', 'الفرقة الرابعة'];
-            const systems =['الكل', 'انتظام', 'انتساب'];
+            const years =['اختار الفرقة', 'الفرقة الأولى', 'الفرقة الثانية', 'الفرقة الثالثة', 'الفرقة الرابعة'];
+            const systems =['اختار النظام', 'انتظام', 'انتساب'];
 
             const filtered = data.filter(item => {
-                const matchYear = hideYearFilter || filterYear === 'الكل' || item.year === filterYear;
+                const matchYear = hideYearFilter || filterYear === 'اختار الفرقة' || item.year === filterYear;
                 const itemSystem = item.studySystem || 'عام';
-                const matchSystem = !showSystemFilter || filterSystem === 'الكل' || itemSystem === 'عام' || itemSystem === filterSystem;
+                const matchSystem = !showSystemFilter || filterSystem === 'اختار النظام' || itemSystem === 'عام' || itemSystem === filterSystem;
                 return matchYear && matchSystem;
             });
 
-            // التأكد من أن العنصر المظلل يظهر حتى لو كان ترتيبه بعد الـ 10 الأوائل
             useEffect(() => {
                 if(highlightedItemId) {
                     const itemIndex = filtered.findIndex(i => i.id === highlightedItemId);
@@ -225,21 +226,29 @@
             const handleShareSection = async () => {
                 const url = new URL(window.location.origin + window.location.pathname);
                 url.searchParams.set('page', type);
-                if (!hideYearFilter && filterYear !== 'الكل') url.searchParams.set('year', filterYear);
-                if (showSystemFilter && filterSystem !== 'الكل') url.searchParams.set('system', filterSystem);
+                
+                // قاموس تحويل النصوص الطويلة لرموز قصيرة لتصغير طول الرابط
+                const yMap = {'الفرقة الأولى':'1', 'الفرقة الثانية':'2', 'الفرقة الثالثة':'3', 'الفرقة الرابعة':'4'};
+                const sMap = {'انتظام':'r', 'انتساب':'a'};
+
+                if (!hideYearFilter && filterYear !== 'اختار الفرقة') {
+                    url.searchParams.set('y', yMap[filterYear] || filterYear);
+                }
+                if (showSystemFilter && filterSystem !== 'اختار النظام') {
+                    url.searchParams.set('s', sMap[filterSystem] || filterSystem);
+                }
 
                 try {
                     if (navigator.share) {
                         await navigator.share({ title: `قسم ${title} - كلية التجارة`, url: url.toString() });
                     } else {
                         await navigator.clipboard.writeText(url.toString());
-                        showToast("تم نسخ رابط القسم", "success");
+                        showToast("تم نسخ رابط القسم القصير", "success");
                     }
                 } catch (e) { console.log("Share failed", e); }
             };
 
             const handleShareCard = async (item) => {
-                // توليد رابط يوجه المستخدم للموقع مباشرة وليس لـ Cloudinary
                 const url = new URL(window.location.origin + window.location.pathname);
                 url.searchParams.set('page', type);
                 url.searchParams.set('item', item.id);
@@ -261,76 +270,70 @@
 
             const isVerticalCard = type === 'lectures' || type === 'notes';
             const isLargeImg = type === 'activities' || type === 'jobs' || type === 'guide' || type === 'training';
-            const isCoverImage = isVerticalCard || type === 'activities';
 
             let imgContainerClass = "";
             if (isVerticalCard) {
-                imgContainerClass = "w-full h-48 md:h-56 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1";
+                imgContainerClass = "w-full h-48 md:h-56 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1.5";
             } else {
                 imgContainerClass = isLargeImg 
-                    ? "w-full sm:w-40 h-48 sm:h-40 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1" 
-                    : "w-full sm:w-28 h-36 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1";
+                    ? "w-full sm:w-40 h-48 sm:h-40 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1.5" 
+                    : "w-full sm:w-28 h-36 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1.5";
             }
 
             return (
                 <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm border border-gray-100">
-                    {/* تصغير حجم الهيدر والأزرار */}
-                    <div className="flex items-center justify-between mb-2 border-b pb-1.5">
-                        <div className="flex items-center gap-1.5">
+                    
+                    <div className="flex flex-wrap items-center justify-between mb-3 border-b pb-2 gap-2">
+                        <div className="flex items-center gap-1.5 flex-1 overflow-hidden">
                             <button onClick={onBack} className="text-gray-500 hover:text-blue-900 transition-colors duration-75 bg-gray-100 hover:bg-gray-200 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">
                                 <i className="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
-                            <div className="text-blue-900 text-sm"><i className={`fa-solid ${icon}`}></i></div>
-                            <h2 className="text-xs md:text-sm font-black text-gray-800">{title}</h2>
+                            <div className="text-blue-900 text-sm hidden sm:block"><i className={`fa-solid ${icon}`}></i></div>
+                            <h2 className="text-[11px] md:text-sm font-black text-gray-800 whitespace-nowrap truncate">{title}</h2>
                         </div>
-                        <button onClick={handleShareSection} className="bg-gray-100 text-blue-900 hover:bg-blue-100 px-1.5 py-0.5 rounded text-[9px] font-bold transition-colors flex items-center gap-1 border border-gray-200">
-                            <i className="fa-solid fa-share-nodes"></i> مشاركة
-                        </button>
+
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                            {(!hideYearFilter || showSystemFilter) && (
+                                <>
+                                    {!hideYearFilter && (
+                                        <div className="relative">
+                                            <select 
+                                                value={filterYear} 
+                                                onChange={(e) => {setFilterYear(e.target.value); setVisibleCount(10);}} 
+                                                className="appearance-none bg-blue-900 text-white text-[9px] font-bold rounded pl-6 pr-2 py-1 outline-none cursor-pointer shadow-sm border border-blue-800"
+                                            >
+                                                {years.map(y => <option key={y} value={y}>{y}</option>)}
+                                            </select>
+                                            <i className="fa-solid fa-chevron-down absolute left-1.5 top-1/2 -translate-y-1/2 text-white text-[7px] pointer-events-none"></i>
+                                        </div>
+                                    )}
+
+                                    {showSystemFilter && (
+                                        <div className="relative">
+                                            <select 
+                                                value={filterSystem} 
+                                                onChange={(e) => {setFilterSystem(e.target.value); setVisibleCount(10);}} 
+                                                className="appearance-none bg-blue-900 text-white text-[9px] font-bold rounded pl-6 pr-2 py-1 outline-none cursor-pointer shadow-sm border border-blue-800"
+                                            >
+                                                {systems.map(s => <option key={s} value={s}>{s}</option>)}
+                                            </select>
+                                            <i className="fa-solid fa-chevron-down absolute left-1.5 top-1/2 -translate-y-1/2 text-white text-[7px] pointer-events-none"></i>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            <button onClick={handleShareSection} className="bg-gray-100 text-blue-900 hover:bg-blue-100 w-6 h-6 rounded flex items-center justify-center transition-colors border border-gray-200" title="مشاركة القسم">
+                                <i className="fa-solid fa-share-nodes text-[10px]"></i>
+                            </button>
+                        </div>
                     </div>
-
-                    {/* تصغير حجم الفلاتر */}
-                    {(!hideYearFilter || showSystemFilter) && (
-                        <div className="flex flex-wrap items-center gap-2 mb-3 bg-gray-50 p-1.5 rounded border border-gray-200">
-                            {!hideYearFilter && (
-                                <div className="flex items-center gap-1">
-                                    <span className="text-[9px] font-bold text-gray-600">المرحلة:</span>
-                                    <div className="relative">
-                                        <select 
-                                            value={filterYear} 
-                                            onChange={(e) => {setFilterYear(e.target.value); setVisibleCount(10);}} 
-                                            className="appearance-none bg-blue-900 text-white text-[9px] font-bold rounded pl-5 pr-1.5 py-0.5 outline-none cursor-pointer shadow-sm border border-blue-800"
-                                        >
-                                            {years.map(y => <option key={y} value={y}>{y}</option>)}
-                                        </select>
-                                        <i className="fa-solid fa-chevron-down absolute left-1 top-1/2 -translate-y-1/2 text-white text-[7px] pointer-events-none"></i>
-                                    </div>
-                                </div>
-                            )}
-
-                            {showSystemFilter && (
-                                <div className="flex items-center gap-1">
-                                    <span className="text-[9px] font-bold text-gray-600">النظام:</span>
-                                    <div className="relative">
-                                        <select 
-                                            value={filterSystem} 
-                                            onChange={(e) => {setFilterSystem(e.target.value); setVisibleCount(10);}} 
-                                            className="appearance-none bg-blue-900 text-white text-[9px] font-bold rounded pl-5 pr-1.5 py-0.5 outline-none cursor-pointer shadow-sm border border-blue-800"
-                                        >
-                                            {systems.map(s => <option key={s} value={s}>{s}</option>)}
-                                        </select>
-                                        <i className="fa-solid fa-chevron-down absolute left-1 top-1/2 -translate-y-1/2 text-white text-[7px] pointer-events-none"></i>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                         {visibleData.length === 0 ? (
                             <div className="col-span-full text-center py-10 text-gray-400 text-sm">لا توجد بيانات متاحة حالياً.</div>
                         ) : (
                             visibleData.map(item => (
-                                /* تقليل سمك الإطار وجعله شبه شفاف */
                                 <div key={item.id} id={`card-${item.id}`} className={`p-2 border border-blue-900/20 rounded-xl hover:shadow-md transition-shadow duration-75 bg-gray-50 relative animate-fade-in flex ${isVerticalCard ? 'flex-col' : 'flex-col sm:flex-row'} gap-3 ${highlightedItemId === item.id ? 'highlight-item' : ''}`}>
 
                                     {showSystemFilter && item.studySystem && item.studySystem !== 'عام' && (
@@ -344,7 +347,7 @@
                                             src={getThumbnail(item.fileUrl)} 
                                             alt={item.title} 
                                             loading="lazy" 
-                                            className={`w-full h-full rounded ${isCoverImage ? 'object-cover' : 'object-contain'}`} 
+                                            className="w-full h-full rounded object-contain" 
                                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=File' }} 
                                         />
                                         
@@ -367,7 +370,6 @@
                                             </div>
                                             <h4 className="font-bold text-gray-800 text-xs md:text-sm line-clamp-2 leading-tight">{item.title}</h4>
                                             
-                                            {/* إضافة حقل وصف الوظيفة القابل للتمرير */}
                                             {item.description && (
                                                 <div className="mt-2 text-[10px] text-gray-600 bg-white border border-gray-200 p-1.5 rounded-lg h-16 overflow-y-auto sidebar-scroll whitespace-pre-wrap leading-relaxed">
                                                     {item.description}
@@ -429,7 +431,7 @@
             const[user, setUser] = useState(null);
             const[isAdmin, setIsAdmin] = useState(false);
             const[page, setPage] = useState('home');
-            const[initialFilters, setInitialFilters] = useState({ year: 'الكل', system: 'الكل' });
+            const[initialFilters, setInitialFilters] = useState({ year: 'اختار الفرقة', system: 'اختار النظام' });
             const[highlightedItemId, setHighlightedItemId] = useState(null);
             const[materials, setMaterials] = useState([]);
             const[schedules, setSchedules] = useState([]);
@@ -520,17 +522,34 @@
                 const params = new URLSearchParams(window.location.search);
                 const pageParam = params.get('page');
                 const itemParam = params.get('item');
+                
+                // دوال لفك تشفير الروابط القصيرة
+                const resolveYear = (val) => {
+                    if(!val) return 'اختار الفرقة';
+                    if(val === '1') return 'الفرقة الأولى';
+                    if(val === '2') return 'الفرقة الثانية';
+                    if(val === '3') return 'الفرقة الثالثة';
+                    if(val === '4') return 'الفرقة الرابعة';
+                    if(val.includes('الفرقة')) return val; // دعم الروابط القديمة
+                    return 'اختار الفرقة';
+                };
+                const resolveSystem = (val) => {
+                    if(!val) return 'اختار النظام';
+                    if(val === 'r') return 'انتظام';
+                    if(val === 'a') return 'انتساب';
+                    if(val === 'انتظام' || val === 'انتساب') return val; // دعم الروابط القديمة
+                    return 'اختار النظام';
+                };
 
                 if (pageParam) {
                     setPage(pageParam);
                     setInitialFilters({
-                        year: params.get('year') || 'الكل',
-                        system: params.get('system') || 'الكل'
+                        year: resolveYear(params.get('y') || params.get('year')),
+                        system: resolveSystem(params.get('s') || params.get('system'))
                     });
                     
                     if(itemParam) {
                         setHighlightedItemId(itemParam);
-                        // التمرير التلقائي للعنصر بعد التحميل
                         setTimeout(() => {
                             const el = document.getElementById(`card-${itemParam}`);
                             if(el) {
@@ -722,7 +741,6 @@
                         <AdSlot id="bottom-ad" />
                     </main>
 
-                    {/* تقليل سمك إطار الهيدر السفلي */}
                     <div className="lg:hidden fixed bottom-0 w-full bg-white border-t border-blue-900/30 flex justify-around py-3 text-blue-900 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl">
                         <button onClick={() => navigate('home')} className={`flex flex-col items-center transition-colors duration-75 ${page === 'home' ? 'text-yellow-500' : 'text-blue-900'}`}>
                             <i className="fa-solid fa-house text-lg"></i><span className="text-[10px] mt-1 font-bold">الرئيسية</span>
@@ -778,9 +796,9 @@
                     <div className="bg-blue-900 text-white text-center py-2 text-sm font-bold border-b border-yellow-500">
                         {schedules[idx].title || 'جداول المحاضرات الرسمية'}
                     </div>
-                    {/* تقليل ارتفاع السلايدر وتغيير لون الأسهم لأسود شفاف */}
-                    <div className="h-48 md:h-72 relative bg-gray-100 cursor-pointer p-2" onClick={() => onPreviewSlider(schedules, idx)}>
-                        <img src={schedules[idx].url} className="w-full h-full object-contain" />
+                    {/* إزالة الـ padding وعمل زوم خفيف مع object-contain لملء المساحة بشكل جميل */}
+                    <div className="h-48 md:h-72 relative bg-white cursor-pointer overflow-hidden" onClick={() => onPreviewSlider(schedules, idx)}>
+                        <img src={schedules[idx].url} className="w-full h-full object-contain scale-[1.03]" />
                         <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i => (i-1+schedules.length)%schedules.length); }} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full transition-colors z-20 shadow border border-white"><i className="fa-solid fa-chevron-left"></i></button>
                         <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i => (i+1)%schedules.length); }} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full transition-colors z-20 shadow border border-white"><i className="fa-solid fa-chevron-right"></i></button>
                     </div>
@@ -819,7 +837,7 @@
             const[studySystem, setStudySystem] = useState('عام');
             const[link, setLink] = useState('');
             const[phone, setPhone] = useState('');
-            const[description, setDescription] = useState(''); // حقل وصف الوظيفة
+            const[description, setDescription] = useState('');
             const[loading, setLoading] = useState(false);
             const[uploadProgress, setUploadProgress] = useState(0);
             const[uploadQueue, setUploadQueue] = useState([]);
@@ -908,7 +926,7 @@
                                     year: (sec === 'jobs' || sec === 'activities') ? 'عام' : year, 
                                     studySystem: finalStudySystem,
                                     link: sec === 'training' ? link : null, phone: sec === 'jobs' ? phone : null,
-                                    description: sec === 'jobs' ? description : null, // إضافة الوصف لقاعدة البيانات
+                                    description: sec === 'jobs' ? description : null,
                                     createdAt: Date.now(), department: 'عام'
                                 });
                             }
@@ -921,7 +939,7 @@
                             year: (sec === 'jobs' || sec === 'activities') ? 'عام' : year, 
                             studySystem: finalStudySystem,
                             link: sec === 'training' ? link : null, phone: sec === 'jobs' ? phone : null,
-                            description: sec === 'jobs' ? description : null, // إضافة الوصف
+                            description: sec === 'jobs' ? description : null,
                             createdAt: Date.now(), department: 'عام'
                         });
                     }
@@ -992,7 +1010,6 @@
                         {sec === 'training' && <input placeholder="رابط خارجي (مثال: يوتيوب)" value={link} className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50" onChange={v=>setLink(v.target.value)} />}
                         {sec === 'jobs' && <input placeholder="رقم الهاتف (للتواصل واتساب/اتصال)" value={phone} className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50" onChange={v=>setPhone(v.target.value)} />}
                         
-                        {/* حقل وصف الوظيفة */}
                         {sec === 'jobs' && <textarea placeholder="اكتب تفاصيل ووصف الوظيفة هنا..." value={description} className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50 col-span-1 md:col-span-2 text-sm" rows="3" onChange={v=>setDescription(v.target.value)}></textarea>}
 
                         <div className="flex flex-col col-span-1 md:col-span-2 border-t-2 border-gray-100 pt-4 mt-2">
