@@ -2,9 +2,9 @@
   "id": "com.commerce.zagazig.app",
   "name": "كلية التجارة جامعة الزقازيق",
   "short_name": "تجارة الزقازيق",
-  "description": "المنصة التعليمية والاجتماعية الشاملة لطلاب كلية التجارة جامعة الزقازيق. توفر المحاضرات، المذكرات، جداول الامتحانات، الأنشطة الطلابية، وفرص التدريب والوظائف.",
-  "start_url": "/?source=pwa",
-  "scope": "/",
+  "description": "المنصة التعليمية والاجتماعية الشاملة لطلاب كلية التجارة جامعة الزقازيق...",
+  "start_url": "./index.html?source=pwa", 
+  "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "background_color": "#eef2f6",
@@ -55,21 +55,21 @@
       "name": "المحاضرات",
       "short_name": "المحاضرات",
       "description": "الذهاب مباشرة إلى قسم المحاضرات",
-      "url": "/?page=lectures",
+      "url": "./index.html?page=lectures",
       "icons":[{ "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "المذكرات",
       "short_name": "المذكرات",
       "description": "الذهاب مباشرة إلى قسم المذكرات",
-      "url": "/?page=notes",
+      "url": "./index.html?page=notes",
       "icons":[{ "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "الأنشطة",
       "short_name": "الأنشطة",
       "description": "استكشاف الأنشطة الطلابية",
-      "url": "/?page=activities",
+      "url": "./index.html?page=activities",
       "icons":[{ "src": "icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
