@@ -1,18 +1,17 @@
-const CACHE_NAME = 'commerce-zagazig-v2';
+// قم بتغيير اسم الكاش لضمان تحديث الـ Service Worker عند المستخدمين
+const CACHE_NAME = 'commerce-zagazig-v3';
 
-// الملفات الأساسية جداً فقط (هيكل التطبيق) التي سيتم حفظها ليعمل التطبيق أوفلاين
-// تأكد من أن أسماء الأيقونات مطابقة لما وضعته في مجلد المشروع
+// استخدام المسارات النسبية (إضافة نقطة)
 const APP_SHELL =[
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192x192.png',
-  '/icon-512x512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192x192.png',
+  './icon-512x512.png'
 ];
 
-// 1. حدث التثبيت (Install) - تثبيت عامل الخادم وحفظ هيكل التطبيق
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // إجبار المتصفح على تفعيل عامل الخادم فوراً
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Service Worker] تم حفظ ملفات التطبيق الأساسية بنجاح');
@@ -21,7 +20,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// 2. حدث التفعيل (Activate) - تنظيف الذاكرة (الكاش) القديمة لمنع اللاج وتراكم الملفات
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -37,9 +35,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. حدث الجلب (Fetch) - استراتيجية "الشبكة أولاً" مع دعم وضع عدم الاتصال (Offline)
 self.addEventListener('fetch', (event) => {
-  // تجاهل طلبات رفع الملفات (POST) وتجاهل طلبات قاعدة بيانات Firebase لمنع استهلاك الذاكرة
   if (event.request.method !== 'GET' || event.request.url.includes('firestore.googleapis.com')) {
     return;
   }
@@ -47,9 +43,9 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
-        // إذا كان الاتصال بالإنترنت ناجحاً، قم بتحديث الكاش للملفات الأساسية فقط
         const url = new URL(event.request.url);
-        if (APP_SHELL.includes(url.pathname)) {
+        // التخزين في الكاش إذا كان الملف ضمن الـ APP_SHELL
+        if (APP_SHELL.some(path => url.pathname.endsWith(path.replace('./', '/')))) {
           const responseClone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
@@ -58,18 +54,16 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(async () => {
-        // في حالة انقطاع الإنترنت (Offline Fallback)
         console.log('[Service Worker] أنت الآن في وضع عدم الاتصال (Offline).');
-        
-        // البحث عن الملف المطلوب في الذاكرة
+
         const cachedResponse = await caches.match(event.request);
         if (cachedResponse) {
           return cachedResponse;
         }
-        
-        // إذا كان المستخدم يطلب صفحة ويب (مثل عمل Refresh) والإنترنت مقطوع، اعرض له التطبيق من الذاكرة
+
+        // استخدام المسار النسبي هنا أيضاً
         if (event.request.mode === 'navigate') {
-          return caches.match('/');
+          return caches.match('./index.html');
         }
       })
   );
