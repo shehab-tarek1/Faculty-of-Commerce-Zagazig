@@ -23,7 +23,10 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
+        
+        /* خلفية الموقع مريحة للعين (أزرق فاتح جداً) */
+        body { font-family: 'Cairo', sans-serif; background-color: #eef2f6; overflow-x: hidden; }
+        
         .ad-container:empty { display: none !important; }
         .nav-link-active { border-bottom: 3px solid #fbbf24; color: #fbbf24 !important; }
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -32,41 +35,42 @@
         .sidebar-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        /* Toast Animation */
+        /* تسريع الانيميشن لمنع اللاج */
         @keyframes slideDownFade {
-            0% { opacity: 0; transform: translate(-50%, -20px); }
+            0% { opacity: 0; transform: translate(-50%, -10px); }
             100% { opacity: 1; transform: translate(-50%, 0); }
         }
-        .animate-toast { animation: slideDownFade 0.15s ease-out forwards; }
+        .animate-toast { animation: slideDownFade 0.1s ease-out forwards; }
 
-        /* تأثير الظهور السلس */
         @keyframes fadeInItem {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(2px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in { animation: fadeInItem 0.2s ease-out forwards; }
+        .animate-fade-in { animation: fadeInItem 0.08s ease-out forwards; }
 
-        /* تأثير التظليل عند فتح رابط لبطاقة معينة */
         @keyframes highlightCard {
-            0% { box-shadow: 0 0 0 4px #fbbf24; background-color: #fef3c7; }
-            100% { box-shadow: 0 0 0 0 transparent; background-color: #f9fafb; }
+            0% { box-shadow: 0 0 0 3px #fbbf24; background-color: #fef3c7; }
+            100% { box-shadow: 0 0 0 0 transparent; background-color: #fafbfc; }
         }
-        .highlight-item { animation: highlightCard 3s ease-out forwards; }
+        .highlight-item { animation: highlightCard 2s ease-out forwards; }
 
         #native-splash {
             position: fixed; inset: 0; z-index: 999999;
             background: linear-gradient(135deg, #1e3a8a 0%, #475569 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.15s ease-in-out;
+            transition: opacity 0.1s ease-in-out;
         }
         #native-splash::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%);
             pointer-events: none;
         }
+
+        /* لون أبيض هادئ للبطاقات بدلاً من الساطع */
+        .bg-soft-white { background-color: #fafbfc; }
     </style>
 </head>
-<body class="pb-20 lg:pb-0">
+<body class="pb-20 lg:pb-0 text-gray-800">
 
     <div id="native-splash">
         <div style="position:relative; z-index:10; display:flex; flex-direction:column; align-items:center;">
@@ -114,7 +118,7 @@
             const icon = type === 'error' ? 'fa-triangle-exclamation' : type === 'success' ? 'fa-check-circle' : 'fa-circle-notch fa-spin';
 
             return (
-                <div className={`fixed top-20 lg:top-24 left-1/2 -translate-x-1/2 ${bgClass} text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-bold z-[999] flex items-center gap-3 animate-toast whitespace-nowrap`}>
+                <div className={`fixed top-20 lg:top-24 left-1/2 -translate-x-1/2 ${bgClass} text-white px-5 py-2.5 rounded-full shadow-lg text-xs font-bold z-[999] flex items-center gap-3 animate-toast whitespace-nowrap`}>
                     <i className={`fa-solid ${icon} text-sm`}></i>
                     {message}
                 </div>
@@ -149,11 +153,11 @@
 
                         {previewData.items.length > 1 && (
                             <>
-                                <button onClick={(e) => { e.stopPropagation(); onNavigate('prev'); }} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/90 text-white w-12 h-12 rounded-full transition-colors duration-75 flex items-center justify-center">
-                                    <i className="fa-solid fa-chevron-left text-xl"></i>
+                                <button onClick={(e) => { e.stopPropagation(); onNavigate('prev'); }} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/90 text-white w-10 h-10 md:w-12 md:h-12 rounded-full transition-colors duration-75 flex items-center justify-center">
+                                    <i className="fa-solid fa-chevron-left text-lg md:text-xl"></i>
                                 </button>
-                                <button onClick={(e) => { e.stopPropagation(); onNavigate('next'); }} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/90 text-white w-12 h-12 rounded-full transition-colors duration-75 flex items-center justify-center">
-                                    <i className="fa-solid fa-chevron-right text-xl"></i>
+                                <button onClick={(e) => { e.stopPropagation(); onNavigate('next'); }} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/90 text-white w-10 h-10 md:w-12 md:h-12 rounded-full transition-colors duration-75 flex items-center justify-center">
+                                    <i className="fa-solid fa-chevron-right text-lg md:text-xl"></i>
                                 </button>
                             </>
                         )}
@@ -171,7 +175,6 @@
 
         const SectionView = ({ type, title, icon, data, hideYearFilter = false, showSystemFilter = false, onBack, onPreviewSingle, onRequestDownload, initialFilters, showToast, highlightedItemId }) => {
             
-            // استخدام المسميات الجديدة كافتراضي
             const[filterYear, setFilterYear] = useState(initialFilters?.year || 'اختار الفرقة');
             const[filterSystem, setFilterSystem] = useState(initialFilters?.system || 'اختار النظام'); 
             const[visibleCount, setVisibleCount] = useState(10);
@@ -227,7 +230,6 @@
                 const url = new URL(window.location.origin + window.location.pathname);
                 url.searchParams.set('page', type);
                 
-                // قاموس تحويل النصوص الطويلة لرموز قصيرة لتصغير طول الرابط
                 const yMap = {'الفرقة الأولى':'1', 'الفرقة الثانية':'2', 'الفرقة الثالثة':'3', 'الفرقة الرابعة':'4'};
                 const sMap = {'انتظام':'r', 'انتساب':'a'};
 
@@ -243,7 +245,7 @@
                         await navigator.share({ title: `قسم ${title} - كلية التجارة`, url: url.toString() });
                     } else {
                         await navigator.clipboard.writeText(url.toString());
-                        showToast("تم نسخ رابط القسم القصير", "success");
+                        showToast("تم نسخ رابط القسم", "success");
                     }
                 } catch (e) { console.log("Share failed", e); }
             };
@@ -263,27 +265,25 @@
                         });
                     } else {
                         await navigator.clipboard.writeText(linkToShare);
-                        showToast("تم نسخ رابط الملف بنجاح", "success");
+                        showToast("تم نسخ رابط الملف", "success");
                     }
                 } catch (e) { console.log("Share failed", e); }
             };
 
-            const isVerticalCard = type === 'lectures' || type === 'notes';
-            const isLargeImg = type === 'activities' || type === 'jobs' || type === 'guide' || type === 'training';
+            // تحديد شكل البطاقات بناءً على القسم
+            const isA4Card = type === 'lectures' || type === 'notes' || type === 'reviews';
 
-            let imgContainerClass = "";
-            if (isVerticalCard) {
-                imgContainerClass = "w-full h-48 md:h-56 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1.5";
+            let gridClass = "grid gap-3 md:gap-4 ";
+            if (isA4Card) {
+                gridClass += "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
             } else {
-                imgContainerClass = isLargeImg 
-                    ? "w-full sm:w-40 h-48 sm:h-40 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1.5" 
-                    : "w-full sm:w-28 h-36 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white relative cursor-pointer p-1.5";
+                gridClass += "grid-cols-1 md:grid-cols-2";
             }
 
             return (
-                <div className="bg-white p-2 md:p-3 rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-soft-white p-2 md:p-3 rounded-xl shadow-sm border border-blue-900/10">
                     
-                    <div className="flex flex-wrap items-center justify-between mb-3 border-b pb-2 gap-2">
+                    <div className="flex flex-wrap items-center justify-between mb-3 border-b border-gray-100 pb-2 gap-2">
                         <div className="flex items-center gap-1.5 flex-1 overflow-hidden">
                             <button onClick={onBack} className="text-gray-500 hover:text-blue-900 transition-colors duration-75 bg-gray-100 hover:bg-gray-200 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">
                                 <i className="fa-solid fa-arrow-right text-[10px]"></i>
@@ -329,83 +329,85 @@
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                    <div className={gridClass}>
                         {visibleData.length === 0 ? (
                             <div className="col-span-full text-center py-10 text-gray-400 text-sm">لا توجد بيانات متاحة حالياً.</div>
                         ) : (
                             visibleData.map(item => (
-                                <div key={item.id} id={`card-${item.id}`} className={`p-2 border border-blue-900/20 rounded-xl hover:shadow-md transition-shadow duration-75 bg-gray-50 relative animate-fade-in flex ${isVerticalCard ? 'flex-col' : 'flex-col sm:flex-row'} gap-3 ${highlightedItemId === item.id ? 'highlight-item' : ''}`}>
+                                <div key={item.id} id={`card-${item.id}`} className={`p-1.5 md:p-2 border border-blue-900/10 rounded-xl hover:shadow-md transition-shadow duration-75 bg-white relative animate-fade-in flex ${isA4Card ? 'flex-col' : 'flex-col sm:flex-row items-start'} gap-2 overflow-hidden ${highlightedItemId === item.id ? 'highlight-item' : ''}`}>
 
+                                    {/* زر المشاركة أعلى يسار البطاقة */}
+                                    <button onClick={(e) => { e.stopPropagation(); handleShareCard(item); }} className="absolute top-2 left-2 bg-white/95 text-blue-900 w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center shadow border border-gray-100 z-30 hover:bg-gray-100 transition-colors" title="مشاركة الملف">
+                                        <i className="fa-solid fa-share-nodes text-[10px] md:text-[11px]"></i>
+                                    </button>
+
+                                    {/* نظام الدراسة أعلى يمين البطاقة */}
                                     {showSystemFilter && item.studySystem && item.studySystem !== 'عام' && (
-                                        <div className="absolute top-0 left-0 bg-yellow-400 text-blue-900 text-[8px] font-black px-1.5 py-0.5 rounded-br-lg rounded-tl-xl z-20">
+                                        <div className="absolute top-0 right-0 bg-yellow-400 text-blue-900 text-[8px] font-black px-2 py-0.5 rounded-bl-lg rounded-tr-xl z-20 shadow-sm">
                                             {item.studySystem}
                                         </div>
                                     )}
 
-                                    <div className={imgContainerClass} onClick={() => onPreviewSingle(item.fileUrl)}>
+                                    {/* حاوية الصورة تتكيف مع نوع القسم */}
+                                    <div className={`flex-shrink-0 rounded-lg overflow-hidden border border-gray-100 bg-gray-50 relative cursor-pointer flex items-center justify-center ${isA4Card ? 'w-full aspect-[1/1.4] p-0.5' : 'w-full sm:w-1/3 min-h-[100px] p-0.5'}`} onClick={() => onPreviewSingle(item.fileUrl)}>
                                         <img 
                                             src={getThumbnail(item.fileUrl)} 
                                             alt={item.title} 
                                             loading="lazy" 
-                                            className="w-full h-full rounded object-contain" 
+                                            className={`w-full rounded ${isA4Card ? 'h-full object-contain' : 'max-h-48 object-contain'}`} 
                                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=File' }} 
                                         />
                                         
-                                        {item.fileUrl?.endsWith('.pdf') && <div className="absolute top-1 right-1 bg-red-600 text-white text-[9px] px-1.5 rounded font-bold shadow z-10">PDF</div>}
+                                        {item.fileUrl?.endsWith('.pdf') && <div className="absolute bottom-1 right-1 bg-red-600 text-white text-[8px] px-1.5 rounded font-bold shadow z-10">PDF</div>}
                                     </div>
 
-                                    <div className="flex-grow flex flex-col justify-between">
+                                    <div className="flex-grow flex flex-col justify-between w-full h-full">
                                         <div>
                                             <div className="flex items-center justify-between mb-1 mt-1 sm:mt-0">
-                                                <div className="flex gap-1.5">
-                                                    {!hideYearFilter && (
-                                                        <span className="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full font-bold">{item.year}</span>
-                                                    )}
-                                                </div>
+                                                {!hideYearFilter && (
+                                                    <span className="text-[8px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-bold border border-blue-100">{item.year}</span>
+                                                )}
                                                 {item.createdAt && (
                                                     <span className="text-[8px] text-gray-400 font-bold" dir="ltr">
                                                         {formatDate(item.createdAt)}
                                                     </span>
                                                 )}
                                             </div>
-                                            <h4 className="font-bold text-gray-800 text-xs md:text-sm line-clamp-2 leading-tight">{item.title}</h4>
+                                            <h4 className={`font-bold text-gray-800 line-clamp-2 leading-tight ${isA4Card ? 'text-[11px]' : 'text-xs md:text-sm'}`}>{item.title}</h4>
                                             
                                             {item.description && (
-                                                <div className="mt-2 text-[10px] text-gray-600 bg-white border border-gray-200 p-1.5 rounded-lg h-16 overflow-y-auto sidebar-scroll whitespace-pre-wrap leading-relaxed">
+                                                <div className="mt-1.5 text-[9px] md:text-[10px] text-gray-600 bg-soft-white border border-gray-100 p-1.5 rounded-lg h-16 overflow-y-auto sidebar-scroll whitespace-pre-wrap leading-relaxed">
                                                     {item.description}
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="flex flex-wrap gap-1.5 mt-2">
-                                            {item.fileUrl && (
+                                        <div className={`flex flex-col gap-1.5 mt-2`}>
+                                            {/* إخفاء أزرار التحميل والمعاينة في الأقسام العامة (الأنشطة، الوظائف، التدريب) */}
+                                            {isA4Card && item.fileUrl && (
                                                 <>
-                                                    <button onClick={() => onPreviewSingle(item.fileUrl)} className="flex-1 bg-blue-100 text-blue-900 text-[10px] py-1 px-1.5 rounded font-bold text-center hover:bg-blue-200 transition-colors duration-75">
-                                                        <i className="fa-solid fa-eye ml-0.5"></i> معاينة
+                                                    <button onClick={() => onPreviewSingle(item.fileUrl)} className="w-full bg-blue-50 text-blue-900 text-[9px] py-1.5 px-2 rounded font-bold text-center hover:bg-blue-100 transition-colors duration-75 flex items-center justify-center gap-1 border border-blue-100">
+                                                        <i className="fa-solid fa-eye"></i> معاينة
                                                     </button>
-                                                    <button onClick={() => onRequestDownload(item.fileUrl, item.title)} className="flex-1 bg-blue-900 text-white text-[10px] py-1 px-1.5 rounded font-bold text-center hover:bg-blue-800 transition-colors duration-75">
-                                                        <i className="fa-solid fa-download ml-0.5"></i> تحميل
+                                                    <button onClick={() => onRequestDownload(item.fileUrl, item.title)} className="w-full bg-blue-900 text-white text-[9px] py-1.5 px-2 rounded font-bold text-center hover:bg-blue-800 transition-colors duration-75 flex items-center justify-center gap-1">
+                                                        <i className="fa-solid fa-download"></i> تحميل
                                                     </button>
                                                 </>
                                             )}
 
                                             {item.link && (
-                                                <a href={item.link} target="_blank" className="flex-1 bg-red-100 text-red-700 text-[10px] py-1 px-1.5 rounded font-bold text-center hover:bg-red-200 transition-colors duration-75 truncate">
-                                                    <i className="fa-brands fa-youtube ml-0.5"></i> عرض الرابط
+                                                <a href={item.link} target="_blank" className="w-full bg-red-50 text-red-700 text-[9px] py-1.5 px-2 rounded font-bold text-center hover:bg-red-100 transition-colors duration-75 truncate flex items-center justify-center gap-1 border border-red-100">
+                                                    <i className="fa-brands fa-youtube"></i> عرض الرابط
                                                 </a>
                                             )}
 
-                                            <button onClick={() => handleShareCard(item)} className="bg-gray-200 text-gray-800 text-[10px] py-1 px-2.5 rounded font-bold text-center hover:bg-gray-300 transition-colors duration-75 flex items-center justify-center shadow-sm" title="مشاركة الملف">
-                                                <i className="fa-solid fa-share-nodes"></i>
-                                            </button>
-
                                             {item.phone && (
-                                                <div className="w-full flex gap-1.5 mt-0.5">
-                                                    <a href={formatWhatsApp(item.phone)} target="_blank" className="flex-1 bg-green-500 text-white text-[10px] py-1 px-1.5 rounded font-bold text-center hover:bg-green-600 transition-colors duration-75">
-                                                        <i className="fa-brands fa-whatsapp ml-0.5"></i> واتساب
+                                                <div className="w-full flex gap-1.5">
+                                                    <a href={formatWhatsApp(item.phone)} target="_blank" className="flex-1 bg-green-500 text-white text-[9px] py-1.5 px-2 rounded font-bold text-center hover:bg-green-600 transition-colors duration-75 flex items-center justify-center gap-1">
+                                                        <i className="fa-brands fa-whatsapp"></i> واتساب
                                                     </a>
-                                                    <a href={`tel:${item.phone}`} className="flex-1 bg-gray-800 text-white text-[10px] py-1 px-1.5 rounded font-bold text-center hover:bg-gray-900 transition-colors duration-75">
-                                                        <i className="fa-solid fa-phone ml-0.5"></i> اتصال
+                                                    <a href={`tel:${item.phone}`} className="flex-1 bg-gray-800 text-white text-[9px] py-1.5 px-2 rounded font-bold text-center hover:bg-gray-900 transition-colors duration-75 flex items-center justify-center gap-1">
+                                                        <i className="fa-solid fa-phone"></i> اتصال
                                                     </a>
                                                 </div>
                                             )}
@@ -418,7 +420,7 @@
 
                     {visibleCount < filtered.length && (
                         <div className="text-center mt-4">
-                            <button onClick={() => setVisibleCount(prev => prev + 10)} className="bg-gray-100 text-gray-700 px-4 py-1.5 rounded-full font-bold text-xs hover:bg-gray-200 transition-colors duration-75 border border-gray-300">
+                            <button onClick={() => setVisibleCount(prev => prev + 10)} className="bg-white text-gray-700 px-4 py-1.5 rounded-full font-bold text-[10px] hover:bg-gray-50 transition-colors duration-75 border border-gray-200 shadow-sm">
                                 عرض المزيد <i className="fa-solid fa-angle-down mr-1"></i>
                             </button>
                         </div>
@@ -442,7 +444,7 @@
 
             const[toast, setToast] = useState({ message: '', type: '' });
 
-            const showToast = (message, type = 'info', duration = 3000) => {
+            const showToast = (message, type = 'info', duration = 2500) => {
                 setToast({ message, type });
                 if (duration) setTimeout(() => setToast({ message: '', type: '' }), duration);
             };
@@ -480,7 +482,7 @@
                 const { url, title } = downloadItem;
                 setDownloadItem(null);
 
-                showToast("جاري تجهيز الملف للتحميل...", "info", 3000);
+                showToast("جاري تجهيز الملف...", "info", 2000);
 
                 try {
                     const dlUrl = url.includes('cloudinary.com') ? url.replace('/upload/', '/upload/fl_attachment/') : url;
@@ -523,21 +525,20 @@
                 const pageParam = params.get('page');
                 const itemParam = params.get('item');
                 
-                // دوال لفك تشفير الروابط القصيرة
                 const resolveYear = (val) => {
                     if(!val) return 'اختار الفرقة';
                     if(val === '1') return 'الفرقة الأولى';
                     if(val === '2') return 'الفرقة الثانية';
                     if(val === '3') return 'الفرقة الثالثة';
                     if(val === '4') return 'الفرقة الرابعة';
-                    if(val.includes('الفرقة')) return val; // دعم الروابط القديمة
+                    if(val.includes('الفرقة')) return val; 
                     return 'اختار الفرقة';
                 };
                 const resolveSystem = (val) => {
                     if(!val) return 'اختار النظام';
                     if(val === 'r') return 'انتظام';
                     if(val === 'a') return 'انتساب';
-                    if(val === 'انتظام' || val === 'انتساب') return val; // دعم الروابط القديمة
+                    if(val === 'انتظام' || val === 'انتساب') return val; 
                     return 'اختار النظام';
                 };
 
@@ -556,7 +557,7 @@
                                 const y = el.getBoundingClientRect().top + window.scrollY - 100;
                                 window.scrollTo({ top: y, behavior: 'smooth' });
                             }
-                        }, 1200);
+                        }, 800);
                     }
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
@@ -572,7 +573,8 @@
                             document.body.style.overflow = '';
                             setTimeout(() => {
                                 splash.remove();
-                            }, 150);
+                                showToast("أهلاً بكم في خدمات كلية التجارة", "success", 3000);
+                            }, 100);
                         }
                     }
                 };
@@ -580,7 +582,7 @@
                 setTimeout(() => {
                     minTimePassed = true;
                     checkReadyToHideSplash();
-                }, 200); 
+                }, 150); 
 
                 onAuthStateChanged(auth, (u) => {
                     setUser(u);
@@ -622,57 +624,58 @@
 
                     {downloadItem && (
                         <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-75">
-                            <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center">
-                                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 text-3xl border-2 border-blue-900">
+                            <div className="bg-soft-white rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center">
+                                <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600 text-2xl border border-blue-200">
                                     <i className="fa-solid fa-cloud-arrow-down"></i>
                                 </div>
-                                <h3 className="text-lg font-bold text-gray-800 mb-2">تأكيد التحميل</h3>
-                                <p className="text-gray-500 mb-6 text-sm">هل توافق على تحميل: <br/><strong className="text-blue-900">{downloadItem.title}</strong>؟</p>
-                                <div className="flex gap-3">
-                                    <button onClick={executeDownload} className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-bold hover:bg-blue-700 transition-colors duration-75 border-2 border-blue-900">موافق، تحميل</button>
-                                    <button onClick={() => setDownloadItem(null)} className="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition-colors duration-75 border-2 border-gray-400">إلغاء</button>
+                                <h3 className="text-base font-bold text-gray-800 mb-2">تأكيد التحميل</h3>
+                                <p className="text-gray-500 mb-5 text-xs">هل توافق على تحميل: <br/><strong className="text-blue-900">{downloadItem.title}</strong>؟</p>
+                                <div className="flex gap-2">
+                                    <button onClick={executeDownload} className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors duration-75">موافق، تحميل</button>
+                                    <button onClick={() => setDownloadItem(null)} className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg text-xs font-bold hover:bg-gray-300 transition-colors duration-75">إلغاء</button>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    <nav className="bg-blue-900 text-white sticky top-0 z-40 shadow-xl border-b-2 border-yellow-500">
-                        <div className="w-full px-4 lg:px-8 flex justify-between items-center h-16">
-                            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('home')}>
-                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-900 shadow-inner">
-                                    <i className="fa-solid fa-graduation-cap text-xl"></i>
+                    <nav className="bg-blue-900 text-white sticky top-0 z-40 shadow-lg border-b-2 border-yellow-500">
+                        <div className="w-full px-4 lg:px-8 flex justify-between items-center h-14 md:h-16">
+                            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('home')}>
+                                <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center text-blue-900 shadow-inner">
+                                    <i className="fa-solid fa-graduation-cap text-sm md:text-lg"></i>
                                 </div>
-                                <span className="font-black text-lg md:text-xl tracking-tighter">تجارة الزقازيق</span>
+                                <span className="font-black text-base md:text-xl tracking-tighter">تجارة الزقازيق</span>
                             </div>
 
-                            <div className="hidden lg:flex items-center gap-1 text-sm">
-                                <button onClick={() => navigate('home')} className={`px-3 py-5 transition-colors duration-75 ${page === 'home' ? 'nav-link-active' : ''}`}>الرئيسية</button>
-                                <button onClick={() => navigate('lectures')} className={`px-3 py-5 transition-colors duration-75 ${page === 'lectures' ? 'nav-link-active' : ''}`}>المحاضرات</button>
-                                <button onClick={() => navigate('notes')} className={`px-3 py-5 transition-colors duration-75 ${page === 'notes' ? 'nav-link-active' : ''}`}>المذكرات</button>
-                                <button onClick={() => navigate('reviews')} className={`px-3 py-5 transition-colors duration-75 ${page === 'reviews' ? 'nav-link-active' : ''}`}>المراجعات</button>
-                                <button onClick={() => navigate('activities')} className={`px-3 py-5 transition-colors duration-75 ${page === 'activities' ? 'nav-link-active' : ''}`}>الأنشطة</button>
-                                <button onClick={() => navigate('training')} className={`px-3 py-5 transition-colors duration-75 ${page === 'training' ? 'nav-link-active' : ''}`}>التدريب</button>
-                                <button onClick={() => navigate('jobs')} className={`px-3 py-5 transition-colors duration-75 ${page === 'jobs' ? 'nav-link-active' : ''}`}>الوظائف</button>
+                            <div className="hidden lg:flex items-center gap-1 text-xs md:text-sm">
+                                <button onClick={() => navigate('home')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'home' ? 'nav-link-active' : ''}`}>الرئيسية</button>
+                                <button onClick={() => navigate('lectures')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'lectures' ? 'nav-link-active' : ''}`}>المحاضرات</button>
+                                <button onClick={() => navigate('notes')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'notes' ? 'nav-link-active' : ''}`}>المذكرات</button>
+                                <button onClick={() => navigate('reviews')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'reviews' ? 'nav-link-active' : ''}`}>المراجعات</button>
+                                <button onClick={() => navigate('activities')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'activities' ? 'nav-link-active' : ''}`}>الأنشطة</button>
+                                <button onClick={() => navigate('training')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'training' ? 'nav-link-active' : ''}`}>التدريب</button>
+                                <button onClick={() => navigate('jobs')} className={`px-3 py-4 md:py-5 transition-colors duration-75 ${page === 'jobs' ? 'nav-link-active' : ''}`}>الوظائف</button>
 
-                                <button onClick={() => navigate(isAdmin ? 'adminDash' : 'admin')} className="mr-4 bg-gradient-to-l from-yellow-400 to-yellow-500 text-blue-950 px-5 py-1.5 rounded-full font-black text-xs shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-150 flex items-center gap-2 border border-yellow-600">
+                                <button onClick={() => navigate(isAdmin ? 'adminDash' : 'admin')} className="mr-3 bg-gradient-to-l from-yellow-400 to-yellow-500 text-blue-950 px-4 py-1.5 rounded-full font-black text-[10px] md:text-xs shadow-sm hover:shadow transition-all duration-75 flex items-center gap-1.5">
                                     <i className={`fa-solid ${isAdmin ? 'fa-user-shield' : 'fa-right-to-bracket'}`}></i>
                                     {isAdmin ? 'الإدارة' : 'دخول'}
                                 </button>
                             </div>
 
-                            <button className="lg:hidden text-2xl p-2" onClick={() => setIsMobileMenuOpen(true)}>
+                            <button className="lg:hidden text-xl p-2" onClick={() => setIsMobileMenuOpen(true)}>
                                 <i className="fa-solid fa-bars"></i>
                             </button>
                         </div>
                     </nav>
 
-                    <div className={`fixed inset-0 bg-black/60 z-[100] transition-opacity duration-75 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
-                    <div className={`fixed top-0 right-0 h-full w-64 bg-white z-[101] shadow-2xl transform transition-transform duration-75 ease-in-out lg:hidden flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                        <div className="bg-blue-900 text-white p-5 flex justify-between items-center border-b-2 border-yellow-500">
-                            <span className="font-bold text-lg">القائمة</span>
-                            <button onClick={() => setIsMobileMenuOpen(false)} className="text-2xl"><i className="fa-solid fa-xmark"></i></button>
+                    <div className={`fixed inset-0 bg-black/50 z-[100] transition-opacity duration-75 lg:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+                    <div className={`fixed top-0 right-0 h-full w-56 md:w-64 bg-soft-white z-[101] shadow-2xl transform transition-transform duration-100 ease-out lg:hidden flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                        <div className="bg-blue-900 text-white p-3 md:p-4 flex justify-between items-center border-b-2 border-yellow-500">
+                            <span className="font-bold text-sm md:text-base">القائمة</span>
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="text-lg md:text-xl"><i className="fa-solid fa-xmark"></i></button>
                         </div>
-                        <div className="flex flex-col p-4 gap-2 overflow-y-auto sidebar-scroll">
+                        {/* تصغير أحجام القائمة الجانبية */}
+                        <div className="flex flex-col p-3 gap-1.5 overflow-y-auto sidebar-scroll">
                             <SidebarBtn icon="fa-house" label="الرئيسية" active={page==='home'} onClick={() => navigate('home')} />
                             <SidebarBtn icon="fa-person-chalkboard" label="المحاضرات" active={page==='lectures'} onClick={() => navigate('lectures')} />
                             <SidebarBtn icon="fa-book" label="المذكرات" active={page==='notes'} onClick={() => navigate('notes')} />
@@ -683,36 +686,36 @@
                             <SidebarBtn icon="fa-map-location" label="دليل الطالب" active={page==='guide'} onClick={() => navigate('guide')} />
                             <SidebarBtn icon="fa-circle-info" label="من نحن" active={page==='about'} onClick={() => navigate('about')} />
 
-                            <hr className="my-2 border-gray-200 w-full" />
+                            <hr className="my-1 border-gray-200 w-full" />
 
-                            <button onClick={handleCleanSite} className="flex items-center justify-center gap-2 w-full p-3 rounded-xl transition-all duration-150 font-black text-sm bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-md mt-2 hover:scale-105 border border-teal-600">
+                            <button onClick={handleCleanSite} className="flex items-center justify-center gap-1.5 w-full p-2 rounded-lg transition-all duration-75 font-black text-[10px] md:text-xs bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-sm mt-1 border border-teal-600">
                                 <i className="fa-solid fa-broom"></i>
-                                تنظيف وتسريع الموقع
+                                تنظيف الموقع
                             </button>
 
-                            <button onClick={() => {navigate(isAdmin ? 'adminDash' : 'admin'); setIsMobileMenuOpen(false);}} className="flex items-center justify-center gap-2 w-full p-3 rounded-xl transition-all duration-150 font-black text-sm bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-950 shadow-md mt-2 hover:scale-105 border border-yellow-600">
+                            <button onClick={() => {navigate(isAdmin ? 'adminDash' : 'admin'); setIsMobileMenuOpen(false);}} className="flex items-center justify-center gap-1.5 w-full p-2 rounded-lg transition-all duration-75 font-black text-[10px] md:text-xs bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-950 shadow-sm mt-1 border border-yellow-600">
                                 <i className={`fa-solid ${isAdmin ? 'fa-user-shield' : 'fa-right-to-bracket'}`}></i>
-                                {isAdmin ? 'لوحة الإدارة' : 'تسجيل الدخول'}
+                                {isAdmin ? 'الإدارة' : 'تسجيل الدخول'}
                             </button>
                         </div>
                     </div>
 
-                    <main className="flex-grow container mx-auto px-4 py-6 max-w-5xl">
+                    <main className="flex-grow container mx-auto px-3 md:px-4 py-4 md:py-6 max-w-5xl">
                         <AdSlot id="top-ad" />
 
                         {page === 'home' && (
-                            <div className="space-y-8">
-                                <div className="relative rounded-3xl overflow-hidden h-56 shadow-2xl">
+                            <div className="space-y-6 md:space-y-8">
+                                <div className="relative rounded-2xl md:rounded-3xl overflow-hidden h-48 md:h-56 shadow-lg">
                                     <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" className="w-full h-full object-cover" alt="الكلية" />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent flex flex-col justify-center px-8 text-white">
-                                        <h2 className="text-3xl font-black mb-2">بوابة كلية التجارة</h2>
-                                        <p className="opacity-80 font-bold">جامعة الزقازيق - شهاب طارق صلاح</p>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent flex flex-col justify-center px-6 md:px-8 text-white">
+                                        <h2 className="text-2xl md:text-3xl font-black mb-1 md:mb-2">بوابة كلية التجارة</h2>
+                                        <p className="opacity-80 font-bold text-xs md:text-sm">جامعة الزقازيق - شهاب طارق صلاح</p>
                                     </div>
                                 </div>
 
                                 <HomeSlider schedules={schedules} onPreviewSlider={openSliderPreview} />
 
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                                     <HomeCard icon="fa-person-chalkboard" label="المحاضرات" color="bg-blue-600" onClick={() => navigate('lectures')} />
                                     <HomeCard icon="fa-book" label="المذكرات" color="bg-indigo-600" onClick={() => navigate('notes')} />
                                     <HomeCard icon="fa-file-shield" label="المراجعات" color="bg-red-600" onClick={() => navigate('reviews')} />
@@ -741,31 +744,31 @@
                         <AdSlot id="bottom-ad" />
                     </main>
 
-                    <div className="lg:hidden fixed bottom-0 w-full bg-white border-t border-blue-900/30 flex justify-around py-3 text-blue-900 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl">
+                    <div className="lg:hidden fixed bottom-0 w-full bg-soft-white border-t border-blue-900/10 flex justify-around py-2.5 text-blue-900 z-50 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] rounded-t-xl">
                         <button onClick={() => navigate('home')} className={`flex flex-col items-center transition-colors duration-75 ${page === 'home' ? 'text-yellow-500' : 'text-blue-900'}`}>
-                            <i className="fa-solid fa-house text-lg"></i><span className="text-[10px] mt-1 font-bold">الرئيسية</span>
+                            <i className="fa-solid fa-house text-base"></i><span className="text-[9px] mt-1 font-bold">الرئيسية</span>
                         </button>
                         <button onClick={() => navigate('lectures')} className={`flex flex-col items-center transition-colors duration-75 ${page === 'lectures' ? 'text-yellow-500' : 'text-blue-900'}`}>
-                            <i className="fa-solid fa-person-chalkboard text-lg"></i><span className="text-[10px] mt-1 font-bold">المحاضرات</span>
+                            <i className="fa-solid fa-person-chalkboard text-base"></i><span className="text-[9px] mt-1 font-bold">المحاضرات</span>
                         </button>
                         <button onClick={() => navigate('notes')} className={`flex flex-col items-center transition-colors duration-75 ${page === 'notes' ? 'text-yellow-500' : 'text-blue-900'}`}>
-                            <i className="fa-solid fa-book text-lg"></i><span className="text-[10px] mt-1 font-bold">المذكرات</span>
+                            <i className="fa-solid fa-book text-base"></i><span className="text-[9px] mt-1 font-bold">المذكرات</span>
                         </button>
                         <button onClick={() => navigate('activities')} className={`flex flex-col items-center transition-colors duration-75 ${page === 'activities' ? 'text-yellow-500' : 'text-blue-900'}`}>
-                            <i className="fa-solid fa-users-gear text-lg"></i><span className="text-[10px] mt-1 font-bold">الأنشطة</span>
+                            <i className="fa-solid fa-users-gear text-base"></i><span className="text-[9px] mt-1 font-bold">الأنشطة</span>
                         </button>
                     </div>
 
                     { (page === 'home' || page === 'about') && (
-                        <footer className="bg-blue-950 text-white py-12 text-center mt-12 border-t-4 border-yellow-500">
+                        <footer className="bg-blue-950 text-white py-10 text-center mt-8 border-t-4 border-yellow-500">
                             <div className="container mx-auto px-4">
-                                <div className="mb-6 flex justify-center gap-6 text-2xl">
+                                <div className="mb-5 flex justify-center gap-5 text-xl">
                                     <a href="#" className="hover:text-yellow-500 transition-colors duration-75"><i className="fa-brands fa-facebook"></i></a>
                                     <a href="#" className="hover:text-yellow-500 transition-colors duration-75"><i className="fa-brands fa-instagram"></i></a>
                                     <a href="#" className="hover:text-yellow-500 transition-colors duration-75"><i className="fa-brands fa-telegram"></i></a>
                                 </div>
-                                <p className="font-bold mb-2">جميع الحقوق محفوظة &copy; {new Date().getFullYear()}</p>
-                                <p className="text-sm opacity-60">تصميم وتطوير: شهاب طارق صلاح</p>
+                                <p className="font-bold mb-1 text-sm">جميع الحقوق محفوظة &copy; {new Date().getFullYear()}</p>
+                                <p className="text-xs opacity-60">تصميم وتطوير: شهاب طارق صلاح</p>
                             </div>
                         </footer>
                     )}
@@ -774,16 +777,16 @@
         };
 
         const SidebarBtn = ({ icon, label, active, onClick, color="text-gray-700" }) => (
-            <button onClick={onClick} className={`flex items-center gap-3 w-full p-3 rounded-xl transition-all duration-75 font-bold text-sm border-r-4 ${active ? 'bg-blue-50 text-blue-900 border-blue-900' : `border-transparent hover:bg-gray-50 ${color}`}`}>
-                <div className="w-6 flex justify-center"><i className={`fa-solid ${icon} text-lg`}></i></div>
+            <button onClick={onClick} className={`flex items-center gap-2 w-full p-2.5 rounded-lg transition-all duration-75 font-bold text-[11px] md:text-xs border-r-4 ${active ? 'bg-blue-50 text-blue-900 border-blue-900' : `border-transparent hover:bg-gray-100 ${color}`}`}>
+                <div className="w-5 flex justify-center"><i className={`fa-solid ${icon} text-sm md:text-base`}></i></div>
                 <span className="text-right flex-1">{label}</span>
             </button>
         );
 
         const HomeCard = ({ icon, label, color, onClick }) => (
-            <div onClick={onClick} className={`${color} p-4 rounded-2xl text-white flex flex-col items-center justify-center gap-2 shadow-lg hover:scale-105 transition-transform duration-75 cursor-pointer border-2 border-white`}>
-                <i className={`fa-solid ${icon} text-2xl`}></i>
-                <span className="font-bold text-xs">{label}</span>
+            <div onClick={onClick} className={`${color} p-3 md:p-4 rounded-xl text-white flex flex-col items-center justify-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-75 cursor-pointer border border-white/20`}>
+                <i className={`fa-solid ${icon} text-xl md:text-2xl`}></i>
+                <span className="font-bold text-[10px] md:text-xs">{label}</span>
             </div>
         );
 
@@ -792,18 +795,17 @@
             if (!schedules.length) return null;
 
             return (
-                <div className="relative w-full rounded-3xl overflow-hidden shadow-xl group">
-                    <div className="bg-blue-900 text-white text-center py-2 text-sm font-bold border-b border-yellow-500">
+                <div className="relative w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-sm border border-gray-200 group">
+                    <div className="bg-blue-900 text-white text-center py-1.5 md:py-2 text-xs md:text-sm font-bold border-b border-yellow-500">
                         {schedules[idx].title || 'جداول المحاضرات الرسمية'}
                     </div>
-                    {/* إزالة الـ padding وعمل زوم خفيف مع object-contain لملء المساحة بشكل جميل */}
-                    <div className="h-48 md:h-72 relative bg-white cursor-pointer overflow-hidden" onClick={() => onPreviewSlider(schedules, idx)}>
-                        <img src={schedules[idx].url} className="w-full h-full object-contain scale-[1.03]" />
-                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i => (i-1+schedules.length)%schedules.length); }} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full transition-colors z-20 shadow border border-white"><i className="fa-solid fa-chevron-left"></i></button>
-                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i => (i+1)%schedules.length); }} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full transition-colors z-20 shadow border border-white"><i className="fa-solid fa-chevron-right"></i></button>
+                    <div className="h-40 md:h-72 relative bg-soft-white cursor-pointer overflow-hidden flex items-center justify-center" onClick={() => onPreviewSlider(schedules, idx)}>
+                        <img src={schedules[idx].url} className="w-full h-full object-contain scale-[1.02]" />
+                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i => (i-1+schedules.length)%schedules.length); }} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white w-7 h-7 rounded-full transition-colors z-20 flex items-center justify-center"><i className="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i => (i+1)%schedules.length); }} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white w-7 h-7 rounded-full transition-colors z-20 flex items-center justify-center"><i className="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
-                    <div className="flex justify-center gap-1 py-2 bg-gray-50 border-t border-gray-200">
-                        {schedules.map((_, i) => <div key={i} className={`h-1.5 rounded-full transition-all duration-75 ${i === idx ? 'w-6 bg-blue-900' : 'w-2 bg-gray-300'}`}></div>)}
+                    <div className="flex justify-center gap-1 py-1.5 bg-gray-50 border-t border-gray-100">
+                        {schedules.map((_, i) => <div key={i} className={`h-1 rounded-full transition-all duration-75 ${i === idx ? 'w-5 bg-blue-900' : 'w-1.5 bg-gray-300'}`}></div>)}
                     </div>
                 </div>
             );
@@ -821,11 +823,11 @@
                 } catch { showToast("خطأ في البريد أو كلمة المرور", "error"); }
             };
             return (
-                <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl mt-10 border-2 border-blue-900">
-                    <h2 className="text-2xl font-bold mb-6 text-center text-blue-900">تسجيل دخول الإدارة</h2>
-                    <input type="email" placeholder="البريد" className="w-full mb-4 border-2 p-3 rounded-xl focus:outline-none focus:border-blue-900 bg-gray-50" onChange={v=>setE(v.target.value)} />
-                    <input type="password" placeholder="كلمة المرور" className="w-full mb-6 border-2 p-3 rounded-xl focus:outline-none focus:border-blue-900 bg-gray-50" onChange={v=>setP(v.target.value)} />
-                    <button onClick={handle} className="w-full bg-blue-900 text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition-colors duration-75 shadow-lg">دخول</button>
+                <div className="max-w-md mx-auto bg-soft-white p-6 md:p-8 rounded-xl shadow-sm border border-blue-900/10 mt-6 md:mt-10">
+                    <h2 className="text-xl md:text-2xl font-bold mb-6 text-center text-blue-900">تسجيل دخول الإدارة</h2>
+                    <input type="email" placeholder="البريد" className="w-full mb-3 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-blue-900 bg-white text-sm" onChange={v=>setE(v.target.value)} />
+                    <input type="password" placeholder="كلمة المرور" className="w-full mb-5 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-blue-900 bg-white text-sm" onChange={v=>setP(v.target.value)} />
+                    <button onClick={handle} className="w-full bg-blue-900 text-white py-2.5 rounded-lg font-bold hover:bg-blue-800 transition-colors duration-75 shadow-sm text-sm">دخول</button>
                 </div>
             );
         };
@@ -970,19 +972,19 @@
             };
 
             return (
-                <div className="bg-white p-6 rounded-2xl shadow-xl space-y-8 relative border-2 border-blue-900">
-                    <div className="flex justify-between items-center border-b-2 border-gray-200 pb-4">
-                        <div className="flex items-center gap-3">
-                            <button onClick={onBack} className="text-gray-500 hover:text-blue-900 transition-colors duration-75 bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center border border-gray-300">
-                                <i className="fa-solid fa-arrow-right"></i>
+                <div className="bg-soft-white p-4 md:p-6 rounded-xl shadow-sm space-y-6 relative border border-blue-900/10">
+                    <div className="flex justify-between items-center border-b border-gray-200 pb-3">
+                        <div className="flex items-center gap-2">
+                            <button onClick={onBack} className="text-gray-500 hover:text-blue-900 transition-colors duration-75 bg-gray-100 hover:bg-gray-200 w-7 h-7 rounded-full flex items-center justify-center border border-gray-200">
+                                <i className="fa-solid fa-arrow-right text-xs"></i>
                             </button>
-                            <h2 className="text-xl font-bold text-blue-900">لوحة التحكم</h2>
+                            <h2 className="text-base md:text-lg font-bold text-blue-900">لوحة التحكم</h2>
                         </div>
-                        <button onClick={()=>{signOut(auth); showToast("تم تسجيل الخروج","success");}} className="text-red-600 text-sm font-bold bg-red-50 px-4 py-1.5 rounded-full border border-red-200 hover:bg-red-100 transition-colors">خروج</button>
+                        <button onClick={()=>{signOut(auth); showToast("تم تسجيل الخروج","success");}} className="text-red-600 text-xs font-bold bg-red-50 px-3 py-1.5 rounded-md border border-red-100 hover:bg-red-100 transition-colors">خروج</button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <select className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50 font-bold text-gray-700" value={sec} onChange={v=>setSec(v.target.value)}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <select className="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-blue-900 bg-white font-bold text-gray-700" value={sec} onChange={v=>setSec(v.target.value)}>
                             <option value="lectures">قسم المحاضرات</option>
                             <option value="notes">قسم المذكرات</option>
                             <option value="reviews">قسم المراجعات</option>
@@ -994,47 +996,47 @@
                         </select>
 
                         {sec !== 'jobs' && sec !== 'activities' && sec !== 'schedule' && (
-                            <select className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50 font-bold text-gray-700" value={year} onChange={v=>setYear(v.target.value)}>
+                            <select className="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-blue-900 bg-white font-bold text-gray-700" value={year} onChange={v=>setYear(v.target.value)}>
                                 <option>الفرقة الأولى</option><option>الفرقة الثانية</option><option>الفرقة الثالثة</option><option>الفرقة الرابعة</option>
                             </select>
                         )}
 
                         {(sec === 'lectures' || sec === 'notes' || sec === 'reviews') && (
-                            <select className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50 font-bold text-gray-700 col-span-1 md:col-span-2" value={studySystem} onChange={v=>setStudySystem(v.target.value)}>
+                            <select className="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-blue-900 bg-white font-bold text-gray-700 col-span-1 md:col-span-2" value={studySystem} onChange={v=>setStudySystem(v.target.value)}>
                                 <option value="عام">عام (يظهر لطلاب الانتظام والانتساب)</option>
                                 <option value="انتظام">انتظام فقط</option>
                                 <option value="انتساب">انتساب فقط</option>
                             </select>
                         )}
 
-                        {sec === 'training' && <input placeholder="رابط خارجي (مثال: يوتيوب)" value={link} className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50" onChange={v=>setLink(v.target.value)} />}
-                        {sec === 'jobs' && <input placeholder="رقم الهاتف (للتواصل واتساب/اتصال)" value={phone} className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50" onChange={v=>setPhone(v.target.value)} />}
+                        {sec === 'training' && <input placeholder="رابط خارجي (مثال: يوتيوب)" value={link} className="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-blue-900 bg-white" onChange={v=>setLink(v.target.value)} />}
+                        {sec === 'jobs' && <input placeholder="رقم الهاتف (للتواصل واتساب/اتصال)" value={phone} className="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-blue-900 bg-white" onChange={v=>setPhone(v.target.value)} />}
                         
-                        {sec === 'jobs' && <textarea placeholder="اكتب تفاصيل ووصف الوظيفة هنا..." value={description} className="border-2 p-2 rounded focus:outline-none focus:border-blue-900 bg-gray-50 col-span-1 md:col-span-2 text-sm" rows="3" onChange={v=>setDescription(v.target.value)}></textarea>}
+                        {sec === 'jobs' && <textarea placeholder="اكتب تفاصيل ووصف الوظيفة هنا..." value={description} className="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-blue-900 bg-white col-span-1 md:col-span-2" rows="3" onChange={v=>setDescription(v.target.value)}></textarea>}
 
-                        <div className="flex flex-col col-span-1 md:col-span-2 border-t-2 border-gray-100 pt-4 mt-2">
-                            <label className="text-sm font-bold text-blue-900 mb-2 bg-blue-50 p-2 rounded border border-blue-100 inline-block w-fit"><i className="fa-solid fa-cloud-arrow-up ml-1"></i> اختر الملفات (يمكن تحديد أكثر من ملف):</label>
-                            <input id="fileInput" type="file" multiple className="border-2 p-2 rounded bg-gray-50 cursor-pointer" onChange={handleFileChange} />
+                        <div className="flex flex-col col-span-1 md:col-span-2 border-t border-gray-100 pt-3 mt-1">
+                            <label className="text-xs font-bold text-blue-900 mb-2 bg-blue-50 p-1.5 rounded border border-blue-100 inline-block w-fit"><i className="fa-solid fa-cloud-arrow-up ml-1"></i> اختر الملفات:</label>
+                            <input id="fileInput" type="file" multiple className="border border-gray-200 p-1.5 rounded-lg bg-white cursor-pointer text-xs" onChange={handleFileChange} />
                         </div>
 
                         {uploadQueue.length === 0 && (
-                            <input placeholder="العنوان (اسم الملف أو الوظيفة)" value={title} className="border-2 p-2 rounded col-span-1 md:col-span-2 focus:outline-none focus:border-blue-900 bg-gray-50 font-bold" onChange={v=>setTitle(v.target.value)} />
+                            <input placeholder="العنوان (اسم الملف أو الوظيفة)" value={title} className="border border-gray-200 p-2 rounded-lg col-span-1 md:col-span-2 focus:outline-none focus:border-blue-900 bg-white font-bold" onChange={v=>setTitle(v.target.value)} />
                         )}
 
                         {uploadQueue.length > 0 && (
-                            <div className="col-span-1 md:col-span-2 bg-blue-50 p-4 rounded-xl border border-blue-200 space-y-3">
-                                <label className="text-sm font-bold text-blue-900">أضف وصفاً/عنواناً لكل ملف محدد:</label>
+                            <div className="col-span-1 md:col-span-2 bg-blue-50 p-3 rounded-lg border border-blue-100 space-y-2">
+                                <label className="text-xs font-bold text-blue-900">أضف وصفاً لكل ملف محدد:</label>
                                 {uploadQueue.map((item, idx) => (
-                                    <div key={idx} className="flex flex-col sm:flex-row items-center gap-2 bg-white p-2 rounded border border-gray-300">
-                                        <span className="text-xs text-gray-500 w-full sm:w-1/3 truncate" dir="ltr">{item.file.name}</span>
-                                        <input className="border-2 p-2 rounded w-full sm:w-2/3 text-sm focus:outline-none focus:border-blue-900 font-bold" value={item.title} placeholder="اكتب العنوان أو الوصف هنا..." onChange={(e) => { const newQ = [...uploadQueue]; newQ[idx].title = e.target.value; setUploadQueue(newQ); }} />
+                                    <div key={idx} className="flex flex-col sm:flex-row items-center gap-1.5 bg-white p-1.5 rounded border border-gray-200">
+                                        <span className="text-[10px] text-gray-500 w-full sm:w-1/3 truncate" dir="ltr">{item.file.name}</span>
+                                        <input className="border border-gray-200 p-1.5 rounded w-full sm:w-2/3 text-xs focus:outline-none focus:border-blue-900 font-bold bg-gray-50" value={item.title} placeholder="اكتب العنوان أو الوصف هنا..." onChange={(e) => { const newQ = [...uploadQueue]; newQ[idx].title = e.target.value; setUploadQueue(newQ); }} />
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
 
-                    <button onClick={upload} disabled={loading} className="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition-colors duration-75 flex justify-center items-center gap-2 border-2 border-green-800">
+                    <button onClick={upload} disabled={loading} className="w-full bg-green-600 text-white py-2.5 rounded-lg font-bold shadow-sm hover:bg-green-700 transition-colors duration-75 flex justify-center items-center gap-2 text-sm">
                         {loading ? (
                             <>
                                 <i className="fa-solid fa-circle-notch fa-spin"></i>
@@ -1043,23 +1045,23 @@
                         ) : 'إضافة الآن'}
                     </button>
 
-                    <div className="mt-8 border-t-2 border-gray-200 pt-8">
-                        <h3 className="font-bold mb-4 text-blue-900">إدارة الملفات المرفوعة:</h3>
-                        <div className="space-y-2 max-h-64 overflow-y-auto sidebar-scroll pr-1">
+                    <div className="mt-6 border-t border-gray-200 pt-6">
+                        <h3 className="font-bold mb-3 text-blue-900 text-sm">إدارة الملفات المرفوعة:</h3>
+                        <div className="space-y-1.5 max-h-56 overflow-y-auto sidebar-scroll pr-1">
                             {materials.map(m => (
-                                <div key={m.id} className="flex justify-between items-center p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm hover:border-blue-300 transition-colors">
+                                <div key={m.id} className="flex justify-between items-center p-2 bg-white border border-gray-200 rounded-lg text-xs hover:border-blue-300 transition-colors">
                                     <span className="font-bold line-clamp-1">
                                         {m.title} 
-                                        <span className="text-xs text-gray-400 font-normal mr-1">({m.sectionType})</span>
-                                        {m.studySystem && m.studySystem !== 'عام' && <span className="text-[10px] bg-yellow-100 text-yellow-800 px-1.5 rounded mr-2 border border-yellow-300">{m.studySystem}</span>}
+                                        <span className="text-[10px] text-gray-400 font-normal mr-1">({m.sectionType})</span>
+                                        {m.studySystem && m.studySystem !== 'عام' && <span className="text-[9px] bg-yellow-50 text-yellow-800 px-1.5 rounded mr-1 border border-yellow-200">{m.studySystem}</span>}
                                     </span>
-                                    <button onClick={()=>requestDelete('materials', m.id)} className="text-red-500 hover:text-red-700 bg-red-50 border border-red-200 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-75"><i className="fa-solid fa-trash"></i></button>
+                                    <button onClick={()=>requestDelete('materials', m.id)} className="text-red-500 hover:text-red-700 bg-red-50 border border-red-100 w-6 h-6 rounded flex items-center justify-center transition-colors duration-75 flex-shrink-0"><i className="fa-solid fa-trash text-[10px]"></i></button>
                                 </div>
                             ))}
                             {schedules.map(s => (
-                                <div key={s.id} className="flex justify-between items-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-                                    <span className="font-bold line-clamp-1 text-yellow-900">{s.title} <span className="text-xs text-yellow-600 font-normal">(سلايدر)</span></span>
-                                    <button onClick={()=>requestDelete('schedules', s.id)} className="text-red-500 hover:text-red-700 bg-red-50 border border-red-200 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-75"><i className="fa-solid fa-trash"></i></button>
+                                <div key={s.id} className="flex justify-between items-center p-2 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
+                                    <span className="font-bold line-clamp-1 text-yellow-900">{s.title} <span className="text-[10px] text-yellow-600 font-normal">(سلايدر)</span></span>
+                                    <button onClick={()=>requestDelete('schedules', s.id)} className="text-red-500 hover:text-red-700 bg-red-50 border border-red-100 w-6 h-6 rounded flex items-center justify-center transition-colors duration-75 flex-shrink-0"><i className="fa-solid fa-trash text-[10px]"></i></button>
                                 </div>
                             ))}
                         </div>
@@ -1067,15 +1069,15 @@
 
                     {confirmDelete && (
                         <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
-                            <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl transform transition-all text-center border-2 border-red-600">
-                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600 text-3xl border-2 border-red-600">
+                            <div className="bg-soft-white rounded-2xl p-6 max-w-sm w-full shadow-2xl transform transition-all text-center border border-red-200">
+                                <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600 text-2xl border border-red-200">
                                     <i className="fa-solid fa-triangle-exclamation"></i>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-800 mb-2">تأكيد الحذف</h3>
-                                <p className="text-gray-500 mb-6 text-sm font-bold">هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذه الخطوة.</p>
-                                <div className="flex gap-3">
-                                    <button onClick={executeDelete} className="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-bold hover:bg-red-700 transition-colors border-2 border-red-800">تأكيد الحذف</button>
-                                    <button onClick={() => setConfirmDelete(null)} className="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition-colors border-2 border-gray-400">إلغاء</button>
+                                <h3 className="text-base font-bold text-gray-800 mb-2">تأكيد الحذف</h3>
+                                <p className="text-gray-500 mb-5 text-xs font-bold">هل أنت متأكد من حذف هذا العنصر؟</p>
+                                <div className="flex gap-2">
+                                    <button onClick={executeDelete} className="flex-1 bg-red-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-red-700 transition-colors">تأكيد الحذف</button>
+                                    <button onClick={() => setConfirmDelete(null)} className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg text-xs font-bold hover:bg-gray-300 transition-colors">إلغاء</button>
                                 </div>
                             </div>
                         </div>
@@ -1085,20 +1087,20 @@
         };
 
         const AboutPage = ({ onBack }) => (
-            <div className="bg-white p-8 rounded-2xl shadow-lg leading-relaxed border-2 border-blue-900">
-                <div className="flex items-center gap-3 mb-4 border-b-2 border-gray-200 pb-3">
-                    <button onClick={onBack} className="text-gray-500 hover:text-blue-900 transition-colors duration-75 bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border border-gray-300">
-                        <i className="fa-solid fa-arrow-right"></i>
+            <div className="bg-soft-white p-6 md:p-8 rounded-xl shadow-sm leading-relaxed border border-blue-900/10">
+                <div className="flex items-center gap-2 mb-4 border-b border-gray-200 pb-3">
+                    <button onClick={onBack} className="text-gray-500 hover:text-blue-900 transition-colors duration-75 bg-gray-100 hover:bg-gray-200 w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 border border-gray-200">
+                        <i className="fa-solid fa-arrow-right text-xs"></i>
                     </button>
-                    <h2 className="text-2xl font-bold text-blue-900">من نحن؟</h2>
+                    <h2 className="text-lg md:text-xl font-bold text-blue-900">من نحن؟</h2>
                 </div>
-                <p className="mb-4 font-bold text-gray-700">موقع كلية التجارة جامعة الزقازيق هو مبادرة طلابية تهدف إلى توفير كافة المصادر التعليمية من محاضرات ومذكرات بشكل منظم وسهل الوصول.</p>
-                <p className="mb-4 font-bold text-gray-700">تم بناء هذا الموقع لخدمة أكثر من 30 ألف طالب في الكلية، مع التركيز على تحديث المحتوى يومياً.</p>
-                <div className="bg-blue-50 p-4 rounded-xl border-2 border-blue-900 shadow-sm mt-6">
-                    <p className="text-sm font-black text-blue-900 text-center"><i className="fa-solid fa-code mr-1"></i> إشراف وتطوير: شهاب طارق صلاح</p>
+                <p className="mb-3 text-sm font-bold text-gray-700">موقع كلية التجارة جامعة الزقازيق هو مبادرة طلابية تهدف إلى توفير كافة المصادر التعليمية من محاضرات ومذكرات بشكل منظم وسهل الوصول.</p>
+                <p className="mb-3 text-sm font-bold text-gray-700">تم بناء هذا الموقع لخدمة أكثر من 30 ألف طالب في الكلية، مع التركيز على تحديث المحتوى يومياً.</p>
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 shadow-sm mt-5">
+                    <p className="text-xs font-black text-blue-900 text-center"><i className="fa-solid fa-code mr-1"></i> إشراف وتطوير: شهاب طارق صلاح</p>
                 </div>
-                <h3 className="font-bold mt-8 mb-2 text-red-600"><i className="fa-solid fa-shield-halved mr-1"></i> سياسة الخصوصية وحقوق الملكية:</h3>
-                <p className="text-xs text-gray-500 font-bold">نحن نحترم حقوق الملكية الفكرية، كافة الملفات المرفوعة هي ملخصات طلابية. إذا كنت تعتقد أن هناك محتوى ينتهك حقوقك يرجى مراسلتنا فوراً.</p>
+                <h3 className="font-bold mt-6 mb-2 text-red-600 text-sm"><i className="fa-solid fa-shield-halved mr-1"></i> سياسة الخصوصية:</h3>
+                <p className="text-[10px] md:text-xs text-gray-500 font-bold">نحن نحترم حقوق الملكية الفكرية، كافة الملفات المرفوعة هي ملخصات طلابية. إذا كنت تعتقد أن هناك محتوى ينتهك حقوقك يرجى مراسلتنا فوراً.</p>
             </div>
         );
 
