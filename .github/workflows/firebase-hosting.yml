@@ -3,15 +3,19 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches:
-      - main   # لو فرعك اسمه مختلف، غيره هنا
+      - main  # كل مرة تعمل push على main هيتعمل deploy
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
+      # خطوة استنساخ المستودع
       - uses: actions/checkout@v3
+
+      # خطوة نشر على Firebase
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
+          projectId: faculty-of-commerce-2026  # ← هنا Project ID
