@@ -6,14 +6,9 @@
     <meta name="google-adsense-account" content="ca-pub-4229854234305317">
     <title>كلية التجارة جامعة الزقازيق | مساهمة طلابيه </title>
 
-    <!-- تسريع الاتصال بسيرفرات الصور وقواعد البيانات والخطوط -->
+    <!-- تسريع الاتصال بسيرفرات الصور وقواعد البيانات -->
     <link rel="preconnect" href="https://res.cloudinary.com">
     <link rel="preconnect" href="https://firestore.googleapis.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- تحميل خطوط جوجل بشكل متوازي وسريع -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- إعدادات PWA -->
     <link rel="manifest" href="manifest.json">
@@ -23,23 +18,32 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- تحميل FontAwesome بشكل متأخر (Lazy Load) لعدم تعطيل الريندر -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- تم حذف importmap واستخدام الروابط المباشرة لضمان دعم الهواتف القديمة -->
+    <!-- تم حذف مكتبة ضغط الصور من هنا لتسريع الموقع للطلاب، وسيتم تحميلها للأدمن فقط -->
+
+    <!-- استخدام نسخة الإنتاج السريعة من React -->
+    <script type="importmap">
+        {
+            "imports": {
+                "react": "https://esm.sh/react@18.2.0?dev=false",
+                "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev=false"
+            }
+        }
+    </script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <!-- بيانات المعاينة (Meta Tags for Social Media) -->
     <meta property="og:title" content="كلية التجارة جامعة الزقازيق | الموقع التعليمي">
     <meta property="og:description" content="المنصة التعليمية الشاملة لطلاب كلية التجارة جامعة الزقازيق - محاضرات، مذكرات، جداول، وأنشطة طلابية.">
-    <meta property="og:image" content="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_fill,g_auto,w_1364,h_768,q_auto:eco,f_auto,fl_progressive/v1776437104/sm5iuilfl3r1fkmg7jyh.png">
+    <meta property="og:image" content="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_fill,g_auto,w_1364,h_768,q_auto:eco,f_auto/v1776437104/sm5iuilfl3r1fkmg7jyh.png">
     <meta property="og:url" content="https://faculty-of-commerce-2026.firebaseapp.com/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="تجارة الزقازيق">
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+
         body { font-family: 'Cairo', sans-serif; background-color: #eef2f6; overflow-x: hidden; }
 
         .ad-container:empty { display: none !important; }
@@ -50,6 +54,7 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* إيقاف جميع الرسوم المتحركة ليكون الموقع لحظي */
         * {
             transition: none !important;
             animation: none !important;
@@ -82,48 +87,23 @@
                 <i class="fa-solid fa-graduation-cap" style="font-size: 30px;"></i>
             </div>
             <h1 style="font-size: 12px; font-weight: 900; color: white; margin-bottom: 4px; letter-spacing: 1px;">أهلاً بكم</h1>
-            <!-- تم تعديل الترتيب لتصبح الدائرة على اليسار -->
             <p style="font-size: 10px; font-weight: 700; color: #d1d5db; display:flex; align-items:center; gap:6px; opacity: 0.9;">
-                <span>جاري التجهيز...</span>
                 <i class="fa-solid fa-spinner fa-spin" style="animation: fa-spin 2s infinite linear !important;"></i>
+                جاري التجهيز...
             </p>
         </div>
     </div>
 
-    <!-- واجهة بديلة في حال فشل المتصفح القديم جداً في تشغيل الموقع -->
-    <div id="root">
-        <div id="fallback-error" style="display:none; text-align:center; padding:60px 20px; font-family:sans-serif;">
-            <i class="fa-solid fa-triangle-exclamation" style="font-size:40px; color:#ef4444; margin-bottom:15px;"></i>
-            <h2 style="font-size:16px; font-weight:bold; color:#1e3a8a; margin-bottom:10px;">عذراً، حدث خطأ في التحميل</h2>
-            <p style="font-size:12px; color:#6b7280; margin-bottom:20px;">قد يكون متصفحك قديماً أو هناك مشكلة في الاتصال بالإنترنت.</p>
-            <button onclick="window.location.reload()" style="background:#1e3a8a; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; font-size:12px;">تحديث الصفحة</button>
-        </div>
-    </div>
-
-    <!-- نظام حماية إضافي لإخفاء شاشة التحميل إجبارياً بعد 6 ثوانٍ -->
-    <script>
-        setTimeout(() => {
-            const splash = document.getElementById('native-splash');
-            if (splash) {
-                splash.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-            const root = document.getElementById('root');
-            const fallback = document.getElementById('fallback-error');
-            if (root && fallback && root.contains(fallback) && root.children.length === 1) {
-                fallback.style.display = 'block';
-            }
-        }, 6000);
-    </script>
+    <div id="root"></div>
 
     <script type="text/babel" data-type="module">
-        // استخدام الروابط المباشرة لضمان التوافق مع الهواتف القديمة
-        import React, { useState, useEffect, useRef, useMemo, useCallback } from 'https://esm.sh/react@18.2.0?dev=false';
-        import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client?dev=false';
-        
+        import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+        import { createRoot } from 'react-dom/client';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-        import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+        
+        // استدعاء أدوات التخزين المؤقت وحماية الذاكرة من فايربيز
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
         window.hideNativeSplash = () => {
             const splash = document.getElementById('native-splash');
@@ -148,16 +128,10 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         
-        let db;
-        try {
-            // محاولة تفعيل التخزين المؤقت
-            db = initializeFirestore(app, {
-                localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
-            });
-        } catch (e) {
-            // في حال فشل التخزين المؤقت (بسبب التصفح الخفي أو متصفح قديم) يتم التشغيل العادي
-            db = getFirestore(app);
-        }
+        // تفعيل التخزين المؤقت (Offline Cache) لكي يفتح الموقع بدون إنترنت وبسرعة الصاروخ
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({tabManager: persistentMultipleTabManager()})
+        });
 
         const CLOUD_NAME = 'dsxrjmcxs';
         const UPLOAD_PRESET = 'my_public_preset';
@@ -317,6 +291,44 @@
                 if (!timestamp) return '';
                 const d = new Date(timestamp);
                 return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+            };
+
+            const handleShareSection = async () => {
+                const url = new URL(window.location.origin + window.location.pathname);
+                url.searchParams.set('page', type);
+
+                const yMap = {'الفرقة الأولى':'1', 'الفرقة الثانية':'2', 'الفرقة الثالثة':'3', 'الفرقة الرابعة':'4', 'كل الفرق':'all'};
+                const sMap = {'انتظام':'r', 'انتساب':'a'};
+
+                if (!hideYearFilter && filterYear !== 'اختار الفرقة') {
+                    url.searchParams.set('y', yMap[filterYear] || filterYear);
+                }
+                if (showSystemFilter && filterSystem !== 'اختار النظام') {
+                    url.searchParams.set('s', sMap[filterSystem] || filterSystem);
+                }
+
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title: `قسم ${title} - كلية التجارة`, url: url.toString() });
+                    } else {
+                        await navigator.clipboard.writeText(url.toString());
+                        showToast("تم نسخ رابط القسم", "success");
+                    }
+                } catch (e) {}
+            };
+
+            const handleShareCard = async (item) => {
+                const url = new URL(window.location.origin + window.location.pathname);
+                url.searchParams.set('page', type);
+                url.searchParams.set('item', item.id);
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title: item.title, text: `شاهد: ${item.title}`, url: url.toString() });
+                    } else {
+                        await navigator.clipboard.writeText(url.toString());
+                        showToast("تم نسخ رابط الملف", "success");
+                    }
+                } catch (e) {}
             };
 
             let gridClass = "grid gap-3 md:gap-4 ";
@@ -527,7 +539,7 @@
             },[]);
 
             const openSinglePreview = useCallback((url) => {
-                if(url) setPreviewData({ items:[{ url }], index: 0 });
+                if(url) setPreviewData({ items: [{ url }], index: 0 });
             },[]);
 
             const openSliderPreview = useCallback((schedulesArray, clickedIndex) => {
@@ -595,21 +607,6 @@
                 }
             };
 
-            const refreshData = useCallback(async () => {
-                try {
-                    const qMat = query(collection(db, 'materials'), orderBy('createdAt', 'desc'), limit(300));
-                    const snapMat = await getDocs(qMat);
-                    setMaterials(snapMat.docs.map(d => ({ id: d.id, ...d.data() })));
-
-                    const qSch = query(collection(db, 'schedules'), orderBy('createdAt', 'desc'), limit(10));
-                    const snapSch = await getDocs(qSch);
-                    setSchedules(snapSch.docs.map(d => ({ id: d.id, ...d.data() })));
-                    setIsSchedulesLoaded(true);
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                }
-            },[]);
-
             useEffect(() => {
                 document.body.style.overflow = 'hidden';
 
@@ -655,16 +652,33 @@
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
 
+                const fallbackTimer = setTimeout(() => {
+                    if (window.hideNativeSplash) window.hideNativeSplash();
+                }, 2500);
+
                 onAuthStateChanged(auth, (u) => {
                     setUser(u);
                     setIsAdmin(u && u.uid === ADMIN_UID);
                 });
 
-                refreshData().finally(() => {
-                    if (window.hideNativeSplash) window.hideNativeSplash();
+                // تطبيق حماية الذاكرة (جلب أحدث 500 ملف فقط بدلاً من كل قاعدة البيانات)
+                const qMat = query(collection(db, 'materials'), orderBy('createdAt', 'desc'), limit(500));
+                const unsubMat = onSnapshot(qMat, (snap) => {
+                    setMaterials(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, (error) => {
+                    if (window.hideNativeSplash) window.hideNativeSplash(); 
                 });
 
-            },[refreshData]);
+                const unsubSch = onSnapshot(collection(db, 'schedules'), (snap) => {
+                    setSchedules(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                    setIsSchedulesLoaded(true);
+                    if (window.hideNativeSplash) window.hideNativeSplash();
+                }, (error) => {
+                    if (window.hideNativeSplash) window.hideNativeSplash(); 
+                });
+
+                return () => { unsubMat(); unsubSch(); clearTimeout(fallbackTimer); };
+            },[]);
 
             const getByType = useCallback((type) => {
                 return materials.filter(m => m.sectionType === type);
@@ -812,7 +826,7 @@
                         {page === 'home' && (
                             <div className="space-y-6 md:space-y-8">
                                 <div className="relative rounded-2xl md:rounded-3xl overflow-hidden h-48 md:h-56 shadow-lg">
-                                    <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_fill,g_auto,w_1364,h_768,q_auto:eco,f_auto,fl_progressive/v1776437104/sm5iuilfl3r1fkmg7jyh.png" className="w-full h-full object-cover" alt="الكلية" fetchpriority="high" decoding="async" />
+                                    <img src="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_fill,g_auto,w_1364,h_768,q_auto:eco,f_auto/v1776437104/sm5iuilfl3r1fkmg7jyh.png" className="w-full h-full object-cover" alt="الكلية" fetchpriority="high" decoding="async" />
                                     <div className="absolute inset-0 bg-gradient-to-r from-blue-950/85 via-blue-900/45 to-transparent flex flex-col justify-center items-center text-center px-6 md:px-8 text-white">
                                         <h2 className="text-2xl md:text-3xl font-black mb-1 md:mb-2 drop-shadow-lg">بوابة كلية التجارة</h2>
                                         <p className="opacity-90 font-bold text-xs md:text-sm drop-shadow-md">جامعة الزقازيق - شهاب طارق صلاح</p>
@@ -865,7 +879,7 @@
 
                         {page === 'about' && <AboutPage onBack={() => navigate('home')} />}
                         {page === 'admin' && !isAdmin && <AdminLogin onSuccess={() => { showToast("تم تسجيل الدخول بنجاح", "success"); navigate('adminDash'); }} showToast={showToast} />}
-                        {page === 'adminDash' && isAdmin && <AdminDashboard materials={materials} schedules={schedules} onBack={() => navigate('home')} showToast={showToast} refreshData={refreshData} />}
+                        {page === 'adminDash' && isAdmin && <AdminDashboard materials={materials} schedules={schedules} onBack={() => navigate('home')} showToast={showToast} />}
 
                         <AdSlot id="bottom-ad" />
                     </main>
@@ -965,7 +979,7 @@
             );
         };
 
-        const AdminDashboard = ({ materials, schedules, onBack, showToast, refreshData }) => {
+        const AdminDashboard = ({ materials, schedules, onBack, showToast }) => {
             const[title, setTitle] = useState('');
             const[sec, setSec] = useState('lectures');
             const[year, setYear] = useState('الفرقة الأولى');
@@ -1016,6 +1030,7 @@
                 setLoading(true);
                 setUploadProgress(0);
                 try {
+                    // تحميل مكتبة ضغط الصور فقط عند الحاجة لرفع ملفات
                     const { default: imageCompression } = await import('https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/+esm');
 
                     const finalStudySystem = (sec === 'lectures' || sec === 'notes' || sec === 'reviews') ? studySystem : 'عام';
@@ -1091,7 +1106,6 @@
                         });
                     }
 
-                    await refreshData();
                     showToast("تمت الإضافة بنجاح", "success");
                     setTitle(''); setLink(''); setPhone(''); setDescription(''); setUploadQueue([]); setUploadProgress(0);
                     document.getElementById('fileInput').value = '';
@@ -1110,7 +1124,6 @@
                 if (!confirmDelete) return;
                 try {
                     await deleteDoc(doc(db, confirmDelete.col, confirmDelete.id));
-                    await refreshData();
                     showToast("تم الحذف بنجاح", "success");
                 } catch (error) {
                     showToast("حدث خطأ أثناء الحذف", "error");
