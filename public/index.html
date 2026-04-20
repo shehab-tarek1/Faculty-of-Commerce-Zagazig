@@ -14,8 +14,6 @@
     <link rel="preload" as="image" href="https://res.cloudinary.com/dsxrjmcxs/image/upload/c_fill,g_auto,w_1364,h_768,q_auto:eco,f_auto/v1776437104/sm5iuilfl3r1fkmg7jyh.png" fetchpriority="high">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    
-    <!-- تم إزالة رابط خطوط جوجل من هنا وسيتم قراءتها من الملفات المحلية -->
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3a8a">
@@ -42,13 +40,13 @@
     <meta property="og:type" content="website">
 
     <style>
-        /* تعريف خط كايرو محلياً لزيادة السرعة */
+        /* تعريف خط كايرو محلياً لزيادة السرعة ومنع ظهور الخط العادي */
         @font-face {
             font-family: 'Cairo';
             font-style: normal;
             font-weight: 400;
             src: local('Cairo'), url('./assets/fonts/cairo-regular.woff2') format('woff2');
-            font-display: swap;
+            font-display: block; /* يمنع ظهور الخط العادي في البداية */
         }
 
         @font-face {
@@ -56,7 +54,7 @@
             font-style: normal;
             font-weight: 700;
             src: local('Cairo'), url('./assets/fonts/cairo-bold.woff2') format('woff2');
-            font-display: swap;
+            font-display: block;
         }
 
         @font-face {
@@ -64,7 +62,7 @@
             font-style: normal;
             font-weight: 900;
             src: local('Cairo'), url('./assets/fonts/cairo-black.woff2') format('woff2');
-            font-display: swap;
+            font-display: block;
         }
 
         body { font-family: 'Cairo', sans-serif; background-color: #eef2f6; overflow-x: hidden; }
@@ -75,7 +73,6 @@
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* إلغاء الانتقال العام لتشغيل الأنيميشن بشكل صحيح */
         * { transition: background-color 0.2s, color 0.2s, border-color 0.2s; } 
         .bg-soft-white { background-color: #fafbfc; }
         
@@ -91,10 +88,17 @@
             z-index: 10;
         }
 
-        /* أنيميشن القائمة المنسدلة */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .toast-animate {
+            animation: toastSlideIn 0.3s ease-out forwards;
         }
     </style>
 </head>
@@ -108,7 +112,6 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, onSnapshot, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        // دالة إنشاء معرف مكون من 4 أرقام يبدأ بـ 1
         const toNumericId = (str) => {
             if (!str) return '';
             let hash = 0;
@@ -158,7 +161,7 @@
             const icon = type === 'error' ? 'fa-triangle-exclamation' : type === 'success' ? 'fa-check-circle' : 'fa-circle-notch fa-spin';
 
             return (
-                <div className={`fixed top-20 lg:top-24 left-1/2 -translate-x-1/2 ${bgClass} text-white px-5 py-2.5 rounded-full shadow-lg text-xs font-bold z-[999] flex items-center gap-3 whitespace-nowrap`}>
+                <div className={`fixed top-20 lg:top-24 left-1/2 -translate-x-1/2 ${bgClass} text-white px-5 py-2.5 rounded-full shadow-lg text-xs font-bold z-[999] flex items-center gap-3 whitespace-nowrap toast-animate`}>
                     <i className={`fa-solid ${icon} text-sm`} style={icon.includes('spin') ? {animation: 'fa-spin 2s infinite linear !important'} : {}}></i>
                     {message}
                 </div>
@@ -214,19 +217,14 @@
             return <div ref={adRef} className={`ad-container w-full ${hasAd ? 'my-6 py-4 bg-gray-50 border' : 'h-0 overflow-hidden'}`}></div>;
         });
 
-        // ==========================
-        // تعديلات SectionView
-        // ==========================
         const SectionView = React.memo(({ type, title, icon, data, hideYearFilter = false, showSystemFilter = false, onBack, onPreviewSingle, onRequestDownload, initialFilters, showToast, highlightedItemId }) => {
             const[filterYear, setFilterYear] = useState(initialFilters?.year || 'اختار الفرقة');
             const[filterSystem, setFilterSystem] = useState(initialFilters?.system || 'اختار النظام'); 
             const[visibleCount, setVisibleCount] = useState(6);
             
-            // حالة للتحكم في فتح وإغلاق القوائم المنسدلة المخصصة
             const[openDropdown, setOpenDropdown] = useState(null);
             const dropdownRef = useRef(null);
 
-            // إغلاق القائمة المنسدلة عند الضغط في أي مكان خارجها
             useEffect(() => {
                 const handleClickOutside = (event) => {
                     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -237,7 +235,6 @@
                 return () => document.removeEventListener("mousedown", handleClickOutside);
             },[]);
 
-            // استجابة لتغير الفلاتر من الخارج 
             useEffect(() => {
                 if(initialFilters?.year) setFilterYear(initialFilters.year);
                 if(initialFilters?.system) setFilterSystem(initialFilters.system);
@@ -291,14 +288,37 @@
                 } catch (err) { console.error(err); }
             };
 
+            // تعديل روابط المشاركة للقسم لتكون قصيرة
             const handleShareSection = async (e) => {
                 e.stopPropagation();
                 try {
                     const baseUrl = getCleanBaseUrl();
                     const params = new URLSearchParams();
                     params.set('p', type);
-                    if (!hideYearFilter && filterYear !== 'اختار الفرقة') params.set('y', filterYear);
-                    if (showSystemFilter && filterSystem !== 'اختار النظام') params.set('s', filterSystem);
+                    
+                    const getYearCode = (y) => {
+                        if(y === 'الفرقة الأولى') return '1';
+                        if(y === 'الفرقة الثانية') return '2';
+                        if(y === 'الفرقة الثالثة') return '3';
+                        if(y === 'الفرقة الرابعة') return '4';
+                        if(y === 'كل الفرق') return 'all';
+                        return '';
+                    };
+                    
+                    const getSystemCode = (s) => {
+                        if(s === 'انتظام') return 'r';
+                        if(s === 'انتساب') return 'a';
+                        return '';
+                    };
+
+                    if (!hideYearFilter && filterYear !== 'اختار الفرقة') {
+                        const yCode = getYearCode(filterYear);
+                        if(yCode) params.set('y', yCode);
+                    }
+                    if (showSystemFilter && filterSystem !== 'اختار النظام') {
+                        const sCode = getSystemCode(filterSystem);
+                        if(sCode) params.set('s', sCode);
+                    }
                     
                     const shareUrl = `${baseUrl}?${params.toString()}`;
                     
@@ -318,7 +338,6 @@
                             <h2 className="text-xs md:text-sm font-black text-gray-800 whitespace-nowrap">{title}</h2>
                         </div>
                         
-                        {/* أزرار الفلترة المخصصة والمشاركة */}
                         <div className="flex items-center gap-1.5 flex-shrink-0" ref={dropdownRef}>
                             <button onClick={handleShareSection} className="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 border border-yellow-200 w-6 h-6 md:w-7 md:h-7 rounded-md flex items-center justify-center flex-shrink-0 shadow-sm transition-colors" title="مشاركة القسم">
                                 <i className="fa-solid fa-share-nodes text-[10px] md:text-xs"></i>
@@ -336,7 +355,6 @@
                                                 <i className={`fa-solid fa-chevron-down text-[8px] transition-transform duration-200 ${openDropdown === 'year' ? 'rotate-180' : ''}`}></i>
                                             </button>
                                             
-                                            {/* القائمة المنسدلة للفرقة */}
                                             {openDropdown === 'year' && (
                                                 <div className="absolute top-full mt-1 right-0 w-32 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden animate-[fadeIn_0.2s_ease-out]" style={{animation: 'fadeIn 0.2s ease-out'}}>
                                                     {years.map(y => (
@@ -362,7 +380,6 @@
                                                 <i className={`fa-solid fa-chevron-down text-[8px] transition-transform duration-200 ${openDropdown === 'system' ? 'rotate-180' : ''}`}></i>
                                             </button>
                                             
-                                            {/* القائمة المنسدلة للنظام */}
                                             {openDropdown === 'system' && (
                                                 <div className="absolute top-full mt-1 left-0 right-auto md:right-0 md:left-auto w-28 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden animate-[fadeIn_0.2s_ease-out]" style={{animation: 'fadeIn 0.2s ease-out'}}>
                                                     {systems.map(s => (
@@ -408,7 +425,6 @@
                                     </div>
                                     <div className="flex flex-col flex-grow justify-between min-w-0 py-0.5">
                                         <div>
-                                            {/* تعديل شريط الفرقة / الوظائف */}
                                             <div className="flex items-center justify-between mb-1.5">
                                                 {type === 'jobs' ? (
                                                     <span className="text-[9px] bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded font-bold border border-cyan-100 truncate max-w-[60%] shadow-sm">
@@ -623,6 +639,7 @@
                 }
             };
 
+            // تم تأخير نزول الشاشة (Scroll) لـ 50 ملي ثانية لمنع القفزة
             const navigate = useCallback((pg) => {
                 try {
                     setIsMobileMenuOpen(false); setHighlightedItemId(null);
@@ -633,7 +650,7 @@
                     window.history.pushState({ page: pg }, '', url.toString());
                     
                     setPage(pg);
-                    setTimeout(() => { const topPos = scrollPositions.current[pg] !== undefined ? scrollPositions.current[pg] : 0; window.scrollTo({ top: topPos, behavior: 'instant' }); }, 0);
+                    setTimeout(() => { const topPos = scrollPositions.current[pg] !== undefined ? scrollPositions.current[pg] : 0; window.scrollTo({ top: topPos, behavior: 'instant' }); }, 50);
                 } catch (err) { setPage(pg); window.scrollTo(0, 0); }
             },[]);
 
@@ -643,7 +660,7 @@
                     const url = new URL(getCleanBaseUrl());
                     window.history.pushState({ page: 'home' }, '', url.toString());
                     setPage('home');
-                    setTimeout(() => { const topPos = scrollPositions.current['home'] !== undefined ? scrollPositions.current['home'] : 0; window.scrollTo({ top: topPos, behavior: 'instant' }); }, 0);
+                    setTimeout(() => { const topPos = scrollPositions.current['home'] !== undefined ? scrollPositions.current['home'] : 0; window.scrollTo({ top: topPos, behavior: 'instant' }); }, 50);
                 } catch (err) { navigate('home'); }
             }, [navigate]);
 
@@ -693,6 +710,7 @@
                 return () => { unsubMat(); unsubSch(); clearTimeout(welcomeTimer); };
             },[]);
 
+            // منع تكرار تحديد العنصر مرتين (Double Highlight Fix)
             useEffect(() => {
                 if (highlightedItemId && materials.length > 0) {
                     const item = materials.find(m => toNumericId(m.id) === highlightedItemId);
@@ -704,14 +722,17 @@
                         
                         setTimeout(() => {
                             const el = document.getElementById(`card-${highlightedItemId}`);
-                            if(el) {
+                            if(el && !el.classList.contains('card-highlight')) {
                                 const y = el.getBoundingClientRect().top + window.scrollY - 100;
                                 window.scrollTo({ top: y, behavior: 'smooth' });
                                 
                                 el.classList.add('card-highlight');
-                                setTimeout(() => el.classList.remove('card-highlight'), 3100);
+                                setTimeout(() => {
+                                    el.classList.remove('card-highlight');
+                                    setHighlightedItemId(null); // يمسح المتغير عشان ميتكررش
+                                }, 3100);
                             }
-                        }, 600);
+                        }, 500);
                     }
                 }
             }, [materials, highlightedItemId]);
@@ -723,7 +744,7 @@
                         const pg = params.get('p') || params.get('page') || 'home';
                         if (currentPageRef.current) scrollPositions.current[currentPageRef.current] = window.scrollY;
                         setPage(pg);
-                        setTimeout(() => { const topPos = scrollPositions.current[pg] !== undefined ? scrollPositions.current[pg] : 0; window.scrollTo({ top: topPos, behavior: 'instant' }); }, 0);
+                        setTimeout(() => { const topPos = scrollPositions.current[pg] !== undefined ? scrollPositions.current[pg] : 0; window.scrollTo({ top: topPos, behavior: 'instant' }); }, 50);
                     } catch (err) {}
                 };
                 window.addEventListener('popstate', handlePopState);
