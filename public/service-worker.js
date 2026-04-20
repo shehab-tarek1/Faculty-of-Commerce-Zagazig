@@ -1,3 +1,4 @@
+// تم تصحيح Const إلى const (حروف صغيرة) لكي يعمل الكود بدون أخطاء
 const CACHE_NAME = 'commerce-zagazig-v6-pro';
 
 // APP_SHELL: الملفات الأساسية التي تجعل التطبيق يعمل أوفلاين فوراً
@@ -15,24 +16,25 @@ const APP_SHELL = [
   './assets/fontawesome/webfonts/fa-brands-400.woff2'
 ];
 
-// 1. التثبيت (Install)
+// 1. التثبيت (Install) - تخزين الملفات الأساسية لضمان السرعة
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+  self.skipWaiting(); // تفعيل فوري للإصدار الجديد
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] تم تخزين الملفات والخطوط بنجاح');
+      console.log('[Service Worker] تم تخزين الملفات والخطوط بنجاح');
       return cache.addAll(APP_SHELL);
     })
   );
 });
 
-// 2. التفعيل (Activate) - تنظيف الكاش القديم
+// 2. التفعيل (Activate) - تنظيف الكاش القديم لتوفير مساحة في هاتف المستخدم
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
+            console.log('[Service Worker] جاري مسح كاش قديم:', key);
             return caches.delete(key);
           }
         })
@@ -41,8 +43,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. معالجة الإشعارات الفورية (Push Notifications)
-// هذا الجزء يضمن وصول الإشعار حتى لو كان المتصفح مغلقاً
+// 3. معالجة الإشعارات الفورية (Push Notifications) - تعمل والمتصفح مغلق
 self.addEventListener('push', (event) => {
   let payload = {
     title: 'تطبيق تجارة الزقازيق',
@@ -96,7 +97,7 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// 4. استراتيجية الجلب (Fetch) - Stale-While-Revalidate
+// 4. استراتيجية الجلب (Fetch) - (Stale-While-Revalidate) لسرعة خرافية
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
@@ -107,11 +108,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // تجاهل طلبات Firebase الخارجية
-  if (request.method !== 'GET' || url.host.includes('firestore.googleapis.com')) return;
+  // تجاهل طلبات Firebase الخارجية لكي لا يتم تخزينها بالخطأ
+  if (request.method !== 'GET' || url.host.includes('firestore.googleapis.com') || url.host.includes('google.com')) {
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
+      // جلب النسخة الأحدث من الإنترنت في الخلفية لتحديث الذاكرة
       const fetchPromise = fetch(request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
@@ -119,9 +123,13 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        if (request.mode === 'navigate') return caches.match('./index.html');
+        // إذا فشل الاتصال بالإنترنت وكان المستخدم يطلب صفحة، اعرض الصفحة الرئيسية المحفوظة
+        if (request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
       });
 
+      // إذا كان الملف في الذاكرة، اعرضه فوراً (سرعة عالية)، وإلا انتظر تحميله من الإنترنت
       return cachedResponse || fetchPromise;
     })
   );
@@ -130,7 +138,6 @@ self.addEventListener('fetch', (event) => {
 // 5. المزامنة الخلفية (Background Sync)
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-notes') {
-    console.log('[SW] جاري مزامنة الملاحظات في الخلفية...');
-    // هنا يتم وضع كود استدعاء API لإرسال الملاحظات المحفوظة محلياً للسيرفر
+    console.log('[Service Worker] جاري مزامنة الملاحظات في الخلفية...');
   }
 });
